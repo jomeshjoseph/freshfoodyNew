@@ -1,0 +1,169 @@
+
+    <!-- Contact Start -->
+    <div class="container-xxl py-6">
+        <div class="container">
+            <div class="section-header text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                <h1 class="display-5 mb-3">Login / Register</h1>
+                <p>Tempor ut dolore lorem kasd vero ipsum sit eirmod sit. Ipsum diam justo sed rebum vero dolor duo.</p>
+            </div>
+            <div class="row g-5 justify-content-center">
+           
+                <div class="col-lg-7 col-md-12 wow fadeInUp" data-wow-delay="0.5s">
+                   
+                    
+                         <!-- Pills navs -->
+                         <ul class="nav nav-pills nav-justified mb-3" id="pills-tab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                              <button class="nav-link active" id="pills-login-tab" data-bs-toggle="pill" data-bs-target="#pills-login" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Login</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                              <button class="nav-link" id="pills-register-tab" data-bs-toggle="pill" data-bs-target="#pills-register" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Register</button>
+                            </li>
+                         
+                          </ul>
+                          <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-login-tab">...</div>
+                            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-register-tab">...</div>
+                          </div>
+  <!-- Pills navs -->
+  
+  <!-- Pills content -->
+  <div class="tab-content" id="ex2-contect">
+    <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+
+      <form method="post"  action="/login">
+  {{#if loginerr}}
+<p class="error">{{loginerr}}</p>
+  {{/if}}
+        <!-- Email input -->
+       
+        <div class="">
+ <div class="col-6 mb-3 justify-content-center">
+          <div class="form-floating ">
+          <input type="email" id="loginName" placeholder="Email" name="email" class="form-control" />
+          <label class="form-label" for="loginName">Email</label>
+        </div>
+      </div> 
+  
+        <!-- Password input -->
+        <div class="col-6 mb-3 justify-content-center">
+          <div class="form-floating">
+          <input type="password" id="loginPassword" placeholder="Password" name="repassword" class="form-control" />
+          <label class="form-label" for="loginPassword">Password</label>
+        </div>
+      </div>
+        <div class="row mb-3">
+          <div class="col-md-6 d-flex justify-content-center">
+            <!-- Checkbox -->
+           
+          </div>
+  
+          <div class="col-md-6 d-flex justify-content-center">
+            <!-- Simple link -->
+            <a href="#!">Forgot password?</a>
+          </div>
+        </div>
+  
+        <!-- Submit button -->
+        <div class="col-12 text-center">
+            <button class="btn btn-primary rounded-pill py-3 px-5" type="submit">LogIn</button>
+        </div>
+        </div>
+      
+   
+        <!-- 2 column grid layout -->
+      
+     
+</form>
+
+            <div class="form-check mb-3 mb-md-0">
+              <p> <a href="/mobile_page">OTP Login</a></p>
+               {{!-- <button class="btn btn-primary rounded-pill py-3 px-5" type="submit">otp </button> --}}
+         {{!-- <button type="submit" class="btn btn-link">OTP</button> --}}
+            </div>
+       
+        <!-- Register buttons -->
+        <div class="text-center">
+          <p>Not a member? <a href="#pills-register">Register</a></p>
+        </div>
+      
+    </div>
+     
+    <!-- Register form -->
+    <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+
+      
+
+  <!-- Username input -->
+  <form   method="post"  action="/signup">
+    <div class="row  g-3 mb-3">
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input type="text" id="registerUsername" placeholder="First Name" class="form-control" name="firstname" />
+          <label class="form-label" for="registerUsername">First Name</label>
+        </div>
+       </div>
+      <div class="col-md-6">
+        <div class="form-floating">
+        <input type="text" id="registerUsername" placeholder="Last Name" name="lastname" class="form-control" />
+        <label class="form-label" for="registerUsername">Last Name</label>
+      </div>
+    </div>
+      <!-- Email input -->
+      <div class="col-md-6">
+        <div class="form-floating">
+        <input type="email" id="registerEmail" placeholder="Email" class="form-control" name="email" />
+        <label class="form-label" for="registerEmail">Email</label>
+      </div>
+    </div>
+    <!-- --phone-- -->
+    <div class="col-md-6">
+      <div class="form-floating">
+      <input type="number" id="registercontactNumber" placeholder="Phone Number" class="form-control" name="phone" />
+      <label class="form-label" for="registerUsername">Phone Number</label>
+    </div>
+  </div>
+      <!-- Password input -->
+      <div class="col-md-6">
+        <div class="form-floating">
+        <input type="text" id="registerUsername" placeholder="Re enter Password" class="form-control" name="password"/>
+        <label class="form-label" for="registerPassword">Password</label>
+      </div>
+    </div>
+    
+      <!-- Password input -->
+      <div class="col-md-6">
+        <div class="form-floating">
+        <input type="password" id="registerPassword" placeholder="Password" class="form-control" name="repassword" />
+        <label class="form-label" for="registerRepeatPassword">Re enter Password</label>
+      </div>
+    </div>
+    </div>
+  
+  
+        <!-- Checkbox -->
+        <div class="form-check d-flex justify-content-center mb-2">
+          <input class="form-check-input me-2" type="checkbox" value="" id="registerCheck" checked
+            aria-describedby="registerCheckHelpText" />
+          <label class="form-check-label" for="registerCheck">
+            I have read and agree to the terms
+          </label>
+        </div>
+  
+        <!-- Submit button -->
+        <div class="col-12 text-center">
+            <button class="btn btn-primary rounded-pill py-3 px-5" type="submit">Register</button>
+        </div>
+    </form>
+
+  
+
+
+  <!-- Pills content -->
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Contact End -->
+

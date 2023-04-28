@@ -7,7 +7,7 @@ const userHeplers=require('../helpers/user-helpers');
 const { response } = require('../app');
 
 router.get('/',user_controller.homePage)
-
+    
 router.get('/login',user_controller.loginPage)
 router.post('/login',user_controller.submit)
 router.get('/profile',user_controller.nocache,user_controller.profile)

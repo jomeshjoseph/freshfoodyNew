@@ -10,7 +10,7 @@
         }, 1);
     };
     spinner();
-    
+      
     
     // Initiate the wowjs
     new WOW().init();

@@ -1,6 +1,7 @@
 var db=require('../config/connection')
 const collections = require('../config/collection')
-const bcrypt=require('bcrypt')
+const bcrypt=require('bcrypt');
+const { ObjectId } = require('mongodb');
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -11,14 +12,21 @@ require('dotenv').config();
 
 module.exports={
   
-  userReg :async (data)=>{
-   
-   
-    // console.log(data);
-data.repassword=await bcrypt.hash(data.repassword,10)
+  userReg :(data)=>{
+    console.log(data,"LLLL");
+   return new Promise(async(resolve,reject)=>{
 
-await db.get().collection(collections.USER_COLLECTION).insertOne(data)
+    data.repassword=await bcrypt.hash(data.repassword,10)
+
+     db.get().collection(collections.USER_COLLECTION).insertOne(data)
+      console.log(data,"LLLLpppp");
+    resolve(data)
+
+   })
   
+
+
+
 
   },
 
@@ -31,23 +39,30 @@ await db.get().collection(collections.USER_COLLECTION).insertOne(data)
       console.log(user);
       if(user){
         
-        bcrypt.compare(data.repassword,user.repassword).then((status)=>{
-        //  console.log(data.repassword);
-          if(status){
-            console.log('login sucess');
-            response.user=user
-            response.status=true
-            console.log(response);
-            resolve({response})
-          }else{
-            console.log('login failed');
-            response.status=false
-            resolve({response})
+        if(user.isBlocked){
+          reject({error:"user is blocked"})
+        }else{
+          bcrypt.compare(data.repassword,user.repassword).then((status)=>{
+             console.log(data.repassword);
+             console.log(user.repassword);
+             console.log(status,'statusssssssss');
+              if(status){
+                console.log('login sucess');
+                response.user=user
+                response.status=true
+                console.log(response);
+                resolve(response)
+              }else{
+                console.log('login failed');
+                response.status=false
+                reject(response)
+              }
+            })
           }
-        })
-      }else{
+        }
+        else{
         console.log('login failed');
-        resolve({status:false})
+        reject({status:false})
       }
     })
   },
@@ -97,6 +112,40 @@ otpConfirm : (confirmotp , userData) => {
           }
       })
   })
+},
+
+getallproducts:()=>{
+  return new Promise (async(resolve,reject)=>{
+    let allproducts=await db.get().collection(collections.PRODUCT_COLLECTION).find().sort({date:-1}).toArray()
+    resolve(allproducts,"seeeeeee")
+    console.log(allproducts)
+  
+  })
+},
+
+// getproductdetail:(data)=>{
+//   return new Promise(async(resolve,reject)=>{
+//     let viewdetail=await db.get().collection(collections.PRODUCT_COLLECTION).findOne({productname : data.productname})
+//     resolve(viewdetail)
+//   } )
+// },
+
+getproductDetails: (proId)=>{
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',proId);
+  return new Promise((resolve,reject)=>{
+      db.get().collection(collections.PRODUCT_COLLECTION).findOne({_id:ObjectId(proId)}).then((product)=>{
+         console.log(product);
+      resolve(product)
+  })
+})
+
 }
+
+
+
+
+
+
+
 
 }

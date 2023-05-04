@@ -7,6 +7,9 @@ const bodyParser=require('body-parser')
 var session = require('express-session')
 const nocache = require("nocache");
 require('dotenv').config(); 
+const Swal = require('sweetalert2')
+
+const multer=require('multer')
 
 // Download the helper library from https://www.twilio.com/docs/node/install
 // Find your Account SID and Auth Token at twilio.com/console
@@ -42,6 +45,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret:"key",cookie:{maxAge:600000}}))
 app.use(nocache());
 
+app.use(bodyParser.urlencoded({extended:false}))
+app.use(bodyParser.json())
+ 
+
 db.connect((err)=>{
   if(err) console.log('connection error'+ err)
   else console.log("Database connected to port 27017")
@@ -49,6 +56,7 @@ db.connect((err)=>{
 
 app.use('/', userRouter);
 app.use('/admin', adminRouter);
+
 app.use(bodyParser.urlencoded({ extended: false }));
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -66,14 +74,14 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.use(function(){
-  client.messages
-  .create({
-    body: 'Hello from twilio-node',
-    to: '+12345678901', // Text your number
-    from: '+12345678901', // From a valid Twilio number
-  })
-  .then((message) => console.log(message.sid)); 
-})
+// app.use(function(){
+//   client.messages
+//   .create({
+//     body: 'Hello from twilio-node',
+//     to: '+12345678901', // Text your number
+//     from: '+12345678901', // From a valid Twilio number
+//   })
+//   .then((message) => console.log(message.sid)); 
+// })
 
 module.exports = app;

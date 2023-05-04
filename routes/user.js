@@ -17,7 +17,8 @@ router.get('/contact',user_controller.contact)
 router.get('/mobile_page',user_controller.mobilepage)
 router.post('/mobile_sent' ,user_controller.mobilesent)
 router.post('/OTP_verify',user_controller.OTP_verify)
-
+router.get('/viewproduct',user_controller.viewproducts)
+router.get('/productdetails/:id',user_controller. singleproduct)
 
 
 

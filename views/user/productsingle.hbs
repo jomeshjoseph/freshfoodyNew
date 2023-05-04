@@ -1,0 +1,50 @@
+ <!-- Page Header Start -->
+    <div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            <h1 class="display-3 mb-3 animated slideInDown">{{product.productname}}</h1>
+        
+			<p>{{product.description}}</p>
+            {{!-- <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
+                    <li class="breadcrumb-item text-dark active" aria-current="page">Products</li>
+                </ol>
+            </nav> --}}
+        </div>
+    </div>
+    <!-- Page Header End -->
+    <!-- Productdetail Start -->
+    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4  me-2   shadow p-3 mb-5 bg-white rounded ">
+					<div class="bg-image hover-zoom" >
+						<img class="w-100" src="/pro-images/{{product.image.[0]}}"  alt="">
+					</div>
+                
+                </div>
+				<div class="col-md-7 ms-5">
+
+					<div class="product-content">
+ <h3>{{product.productname}}</h3>
+					<span>Per Kg</span>	<h2 class="single-product-pricing mt-3">₹ {{product.price}}</h2>
+					<p><strong>Categories: </strong>{{product.category}}</p>
+<p>{{product.description}}</p>
+
+<div class="single-product-form mt-3 mb-3">
+							<form action="" class="my-5">
+								<input type="number" placeholder="0">
+							</form>
+							<a class="btn btn-primary rounded-pill py-3 px-5" href="">Add to Cart</a>
+							
+							
+						</div>
+						
+					</div>
+				</div>
+            </div>
+        </div>
+    </div>
+    <!-- product detail End -->
+        

@@ -7,17 +7,63 @@
                     <i class="bi bi-exclamation-triangle display-1 text-primary"></i>
                     <h1 class="display-1">OTP</h1>
                     <h2 class="mb-4">Enter OTP</h2>
-                    <div class="col-xs-2 mb-3">
- <input type="text" placeholder="OTP" name="otp">
+                    <div class="col-xs-1 mb-3">
+ {{!-- <input type="text" placeholder="OTP" name="otp"> --}}
+
+<div class="col-md-8 offset-md-2 position-relative ">
+
+
+											<div id="otp"
+												class="inputs d-flex flex-row justify-content-center mt-2 mb-2">
+
+												<input class="m-2 text-center form-control rounded" type="text"
+													id="first" name="digit1" maxlength="1" />
+												<input class="m-2 text-center form-control rounded" type="text"
+													id="second" name="digit2" maxlength="1" />
+												<input class="m-2 text-center form-control rounded" type="text"
+													id="third" name="digit3" maxlength="1" />
+												<input class="m-2 text-center form-control rounded" type="text"
+													id="fourth" name="digit4" maxlength="1" />
+												
+											</div>
+
+
+
  
-                    </div>
+                 </div>
                    
                     {{!-- <p class="mb-4">We’re sorry, the page you have looked for does not exist in our website! Maybe go to our home page or try to use a search?</p> --}}
                     {{!-- <a class="btn btn-primary rounded-pill py-3 px-5" href="">Verify</a> --}}
                     <button class="btn btn-primary rounded-pill py-3 px-5" type="submit">verify</button>
+                    <form  method="post" action="/resent">
+ <p  type="submit"> Resend OTP</p>
+                    </form>
+                   
                 </div>
             </div>
         </div>
     </div>
     </form>
     <!-- 404 End -->
+
+    <script>
+	
+	
+	document.addEventListener("DOMContentLoaded", function (event) {
+		function OTPInput() {
+			const inputs = document.querySelectorAll('#otp > *[id]');
+			for (let i = 0; i < inputs.length; i++) {
+				inputs[i].addEventListener('keydown' function (event) {
+					if (event.key === "Backspace") {
+						inputs[i].value = '';
+						if (i !== 0) inputs[i - 1].focus();
+					} else {
+						if (i === inputs.length - 1 && inputs[i].value !== '') {
+							return true;
+						} else if (event.keyCode > 47 && event.keyCode < 58) { inputs[i].value = event.key; if (i !== inputs.length - 1) inputs[i + 1].focus(); event.preventDefault(); } else if (event.keyCode > 64 && event.keyCode < 91) { inputs[i].value = String.fromCharCode(event.keyCode); if (i !== inputs.length - 1) inputs[i + 1].focus(); event.preventDefault(); }
+					}
+				});
+			}
+		} OTPInput();
+	});
+</script>

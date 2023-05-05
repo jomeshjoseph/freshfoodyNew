@@ -3,11 +3,14 @@ const adminHeplers=require('../helpers/user-helpers');
 const { response } = require('../app');
 const multer = require('multer');
 const path = require('path')
+const Swal = require('sweetalert');
 
 var express = require('express');
 
 var router = express.Router();
 var MongoClient = require('mongodb').MongoClient
+
+
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -23,7 +26,8 @@ var storage = multer.diskStorage({
   })
 
 const {adminlogin,adminreg,admininfo,adminhomepage,adminallusers,adminBlockUser, 
-    adminUnBlockUser,adminallproducts,adminaddproductpage,adminaddproduct,logout,admineditproduct,adminupdateproduct} = require('../controller/admin_controller');
+    adminUnBlockUser,adminallproducts,adminaddproductpage,adminaddproduct,logout,admineditproduct,
+    adminupdateproduct,admindeleteproduct} = require('../controller/admin_controller');
 
 
 router.get('/',adminlogin)
@@ -39,6 +43,7 @@ router.get('/blockUser',adminBlockUser)
  router.get('/logout',logout)
  router.get('/editproduct/:id',admineditproduct)
 router.post('/editpro/:id',uploadPro.array('image'),adminupdateproduct)
+router.get('/deleteproduct/:id',admindeleteproduct)
 
 
 module.exports = router;

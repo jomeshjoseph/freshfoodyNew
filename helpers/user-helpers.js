@@ -98,11 +98,14 @@ console.log(user.phone,'lllllllll');
 otpConfirm : (confirmotp , userData) => {
   return new Promise((resolve , reject) => {
 
+    let otp = confirmotp.digit1 +confirmotp .digit2 + confirmotp.digit3 + confirmotp.digit4;
+console.log(otp);
+
       client.verify.services(serviceid)
       .verificationChecks
       .create({
           to: `+91${userData.phone}`,
-          code: confirmotp.otp
+          code: otp
       }).then((data) => {
           if(data.status == 'approved'){
               resolve({status : true})
@@ -113,6 +116,36 @@ otpConfirm : (confirmotp , userData) => {
       })
   })
 },
+doReOtp : (Data) => {
+    
+  console.log(Data , 'aaaaaaaaaaa');
+  return new Promise(async(resolve , reject) => {
+  let response = {}
+  
+      let user =await db.get().collection(collections.USER_COLLECTION).findOne({phone: Data.phone})
+console.log(user.phone,'lllllllll');
+      if(user){
+          response.status = true
+          response.user = user
+
+          client.verify.services(serviceid)
+          .verifications
+          .create({ to: `+91${Data.phone}`, channel: 'sms' })
+          .then((data) => {
+
+          })
+          resolve(response)
+      }
+      else{
+          response.status = false
+          resolve(response)
+          console.log(response);
+      }
+  })
+}
+
+
+,
 
 getallproducts:()=>{
   return new Promise (async(resolve,reject)=>{

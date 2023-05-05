@@ -3,7 +3,7 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const serviceid=process.env.TWILIO_AUTH_Sid;
 const client = require("twilio")(accountSid, authToken);
-const Swal = require('sweetalert2')
+const Swal = require('sweetalert')
 require('dotenv').config(); 
 
 const { response, render } = require('../app');
@@ -141,6 +141,13 @@ res.redirect('/profile')
     mobilepage : ((req , res) => {
         res.render('user/mobile_page')
     }),
+
+    Reotp : ((req , res) => {
+        // res.render('user/OTP_verify')
+        userHepler.doOtp(req.body)
+    })
+    
+    ,
 
 
     mobilesent : ((req , res) => {

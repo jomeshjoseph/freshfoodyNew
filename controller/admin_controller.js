@@ -1,10 +1,11 @@
+const { response } = require('../app');
 const adminHepler = require('../helpers/admin-hepler');
 const product_helper = require('../helpers/product_helper');
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const serviceid = process.env.TWILIO_AUTH_Sid;
 const client = require("twilio")(accountSid, authToken);
-
+const Swal = require('sweetalert');
 
 module.exports = {
     adminlogin: (req, res) => {
@@ -100,27 +101,55 @@ module.exports = {
     adminupdateproduct: (req, res) => {
         console.log('mmmmmmmmmmmmmmmmmmmm');
 
-        
-            let image = []
-            req.files.forEach(function (value, index) {
-                image.push(value.filename)
-                console.log(value.filename,'valueeeeeeeeeee');
 
-            })
-            req.body.image = image
-            console.log( "www>>>>>>>>>><<<<<<<<<<<<<<<<<");
-        
+        let image = []
+        req.files.forEach(function (value, index) {
+            image.push(value.filename)
+            console.log(value.filename, 'valueeeeeeeeeee');
+
+        })
+        req.body.image = image
+        console.log("www>>>>>>>>>><<<<<<<<<<<<<<<<<");
+
         let proId = req.params.id
         let prodetails = req.body
         console.log(proId);
         console.log(prodetails);
-        
+
         product_helper.productupdate(proId, prodetails).then(() => {
             res.render('admin/admin-homepage', { layout: 'admin-layout', admin: true })
 
 
         })
-    }
+    },
+    admindeleteproduct: async (req, res) => {
+        let proId = req.params.id;
+
+     
+            product_helper.productdelete(proId).then((response)=>{
+      
+                res.redirect('/admin/allproducts')
+          })
 
 
+       
+     
+
+  
 }
+      
+            
+
+           
+    
+    
+}
+
+      
+    
+
+
+
+
+
+

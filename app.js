@@ -7,7 +7,9 @@ const bodyParser=require('body-parser')
 var session = require('express-session')
 const nocache = require("nocache");
 require('dotenv').config(); 
-const Swal = require('sweetalert2')
+const Swal = require('sweetalert')
+
+
 
 const multer=require('multer')
 

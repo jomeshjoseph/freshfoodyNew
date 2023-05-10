@@ -5,7 +5,7 @@ const { ObjectId } = require('mongodb');
 const { response } = require('../app');
 
 // import Swal from 'sweetalert2'
-const Swal = require('sweetalert')
+// const Swal = require('sweetalert')
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -46,7 +46,7 @@ module.exports = {
         .updateOne({ _id: ObjectId(proid) }, {
           $set: {
             productname: prodetails.productname,
-            category: prodetails.category,
+            // categoryname: prodetails.categoryname,
             description: prodetails.description,
             price: prodetails.price,
             image: prodetails.image,

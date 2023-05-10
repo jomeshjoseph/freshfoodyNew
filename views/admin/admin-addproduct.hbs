@@ -10,11 +10,18 @@
                                     placeholder="Product Name" name="productname">
                                 <label for="floatingInput">Product Name</label>
                             </div>
-                            <div class="form-floating mb-3">
-                                <input type="text " class="form-control" id="floatingInput"
-                                    placeholder="Category" name="category">
-                                <label for="floatingInput">Category</label>
-                            </div>
+                            <div class="nav-item dropdown">
+                       <select class="form-select" name="categoryname" aria-label="Default select example">
+                        <option selected>Select category</option>
+                        {{#each getcategory}}
+                        <option value="{{this.categoryname}}">{{this.categoryname}}</option>
+                        {{/each}}
+                        
+                        
+                      
+                    </select>
+                        </div>
+                    </div>
                             <div class="form-floating mb-3">
                                 <input type="text " class="form-control" id="floatingInput"
                                     placeholder="Description" name="description">

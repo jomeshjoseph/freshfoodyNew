@@ -10,11 +10,18 @@
                                     placeholder="Product Name" name="productname" value="{{product.productname}}">
                                 <label for="floatingInput">Product Name</label>
                             </div>
-                            <div class="form-floating mb-3">
-                                <input type="text " class="form-control" id="floatingInput"
-                                    placeholder="Category" name="category" value="{{product.category}}">
-                                <label for="floatingInput">Category</label>
-                            </div>
+                             <div class="nav-item dropdown">
+                       <select class="form-select" name="categoryname" aria-label="Default select example">
+                        {{!-- {{#each category}} --}}
+                        {{!-- <option value="{{this.categoryname}}">{{this.categoryname}}</option>
+                      {{/each}}
+                        <option >{{product.categoryname}}</option> --}}
+                    
+                        
+                        
+                      
+                    </select>
+                        </div>
                             <div class="form-floating mb-3">
                                 <input type="text " class="form-control" id="floatingInput"
                                     placeholder="Description" name="description" value="{{product.description}}">
@@ -27,17 +34,17 @@
                             </div>
                            <div class="col-md-2  me-1 ">
 					<div >
-						<img  src="/pro-images/{{product.image.[0]}}"  alt="">
+						<img    alt="">
 					</div>
                 
                 </div>
                             <div class="mb-3">
                                 <div class="col-md-2 ">
- {{!-- <img class="w-100" src="/pro-images/{{product.image.[0]}}"  alt="" style="width:30px;height:30px  "> --}}
+ {{!-- <img class="w-100" src="/pro-images/{{product.image.[0]}}"  alt="" style="width:30px;height:30px "> --}}
                                 </div>
                                 
                                 <label for="formFile" class="form-label">Default file input example</label>
-                                <input class="form-control bg-dark" name="image" multiple type="file" id="formFile">
+                                <input class="form-control bg-dark" name="image"  multiple type="file" id="formFile">
                             </div>
                              <div class="m-n2">
                              <button type="submit" class="btn btn-danger m-2">Submit</button>

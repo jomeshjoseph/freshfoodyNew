@@ -121,6 +121,20 @@ getproductdetails: (proId)=>{
 })
    
   })
+},
+
+addcategory:async(data)=>{
+  console.log(data);
+  await db.get().collection(collections.CATEGORY_COLLECTION).insertOne(data)
+},
+
+getallcategory:()=>{
+  return new Promise (async(resolve,reject)=>{
+    let allcategory=await db.get().collection(collections.CATEGORY_COLLECTION).find().sort({date:-1}).toArray()
+    resolve(allcategory)
+    console.log(allcategory)
+  
+  })
 }
 
 

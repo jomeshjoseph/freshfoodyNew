@@ -1,5 +1,6 @@
 const { response } = require('../app');
 const adminHepler = require('../helpers/admin-hepler');
+const categoryHelper = require('../helpers/category-helper');
 const product_helper = require('../helpers/product_helper');
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -69,7 +70,11 @@ module.exports = {
 
     adminaddproductpage: (req, res) => {
         console.log(('ddddddddddddd'));
-        res.render('admin/admin-addproduct', { layout: 'admin-layout', admin: true })
+
+        categoryHelper.getallcategory().then((getcategory)=>{
+            res.render('admin/admin-addproduct', { layout: 'admin-layout', admin: true,getcategory })
+        })
+        
     },
 
     adminaddproduct: async (req, res) => {
@@ -81,6 +86,7 @@ module.exports = {
         })
         req.body.image = image
         console.log(req.body.image, ">>>>>>>>>><<<<<<<<<<<<<<<<<");
+        console.log(req.body,'bodyyyyyyyynewwww');
         await adminHepler.addproduct(req.body)
         res.redirect('/admin/allproducts')
 
@@ -94,11 +100,14 @@ module.exports = {
         console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq');
         let usere = req.session.admin
         let product = await product_helper.getproductdetails(req.params.id)
-        console.log("//////////////////////////////////////////////////////////////");
+    //   let category=await categoryHelper.getallcategory()
+        console.log(product.image,"//////////////////////////////////////////////////////////////");
+        console.log('cccccccc');
         res.render('admin/admin-editproduct', { layout: 'admin-layout', admin: true, product })
     },
 
     adminupdateproduct: (req, res) => {
+ 
         console.log('mmmmmmmmmmmmmmmmmmmm');
 
 
@@ -109,16 +118,16 @@ module.exports = {
 
         })
         req.body.image = image
-        console.log("www>>>>>>>>>><<<<<<<<<<<<<<<<<");
+        console.log(image,"www>>>>>>>>>><<<<<<<<<<<<<<<<<");
 
         let proId = req.params.id
         let prodetails = req.body
         console.log(proId);
-        console.log(prodetails);
+        console.log(prodetails,'detailsssssssssss');
 
         product_helper.productupdate(proId, prodetails).then(() => {
-            res.render('admin/admin-homepage', { layout: 'admin-layout', admin: true })
-
+            // res.render('admin/admin-homepage', { layout: 'admin-layout', admin: true })
+            res.redirect('/admin/allproducts')
 
         })
     },
@@ -130,14 +139,63 @@ module.exports = {
       
                 res.redirect('/admin/allproducts')
           })
+},
+
+adminaddcategorypage:(req,res)=>{
+    console.log('catorrrrrrr');
+    res.render('admin/admin-category',{ layout: 'admin-layout', admin: true })
+},
+adminaddcatogory:async(req,res)=>{
+console.log('addddcatg');
+await adminHepler.addcategory(req.body)
+res.redirect('/admin/allcategory')
+},
+
+adminallcategory: async (req, res) => {
+        console.log("alllllcattttt");
+        adminHepler.getallcategory().then((allcategory) => {
+           
+            res.render('admin/admin-category', { layout: 'admin-layout',allcategory, admin: true })
+        })
+    },
+admindeletecategory: async(req,res)=>{
+        let proId = req.params.id;
+console.log(proId);
+        categoryHelper.categorydelete(proId).then((response)=>{
+            res.redirect('/admin/allcategory')
+        })
+    
+     },
+
+     admineditcategory:async (req, res) => {
+
+        console.log('editcataaaaaaaa');
+        // let user = req.session.admin
+        let category = await categoryHelper.getcategorydetails(req.params.id)
+        console.log("getcataaaaaaaa");
+    
+        res.render('admin/admin-category', { layout: 'admin-layout', admin: true, category })
+    },
+
+    adminupdatecategory: (req, res) => {
+        console.log('updateeeeeeee');
 
 
-       
-     
+        let proId = req.params.id
+        let catedetails = req.body
+        console.log(proId);
+        console.log(catedetails);
 
-  
-}
+        categoryHelper.categoryupdate(proId, catedetails).then(() => {
+            res.redirect('/admin/allcategory')
+
+        })
+    }
       
+  
+            
+    
+    
             
 
            

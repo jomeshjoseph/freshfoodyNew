@@ -4,7 +4,16 @@ var MongoClient = require('mongodb').MongoClient
 
 const user_controller= require('../controller/user_controller')
 const userHeplers=require('../helpers/user-helpers');
+
 const { response } = require('../app');
+
+const verifylogin=(req,res,next)=>{
+  if(req.session.loggedIn){
+    next()
+  }else{
+    req.redirect('/login')
+  }
+}
 
 router.get('/',user_controller.homePage)
     
@@ -20,7 +29,14 @@ router.post('/resent',user_controller.Reotp)
 router.post('/OTP_verify',user_controller.OTP_verify)
 router.get('/viewproduct',user_controller.viewproducts)
 router.get('/productdetails/:id',user_controller. singleproduct)
-
-
+router.get('/userdetails/:id',user_controller.userdetails)
+router.get('/edituserdetails',user_controller.edituserdetailspage)
+router.post('/updateuserdetails/:id',user_controller.updateuserdetails)
+router.get('/passwardchange',user_controller.editpassword)
+router.get('/add-to-cart/:id',verifylogin,user_controller.addtocart)
+router.get('/cart',verifylogin,user_controller.getcartpage)
+router.get('/orderpage',verifylogin,user_controller.getorderpage)
+router.post('/change-product-quantity',user_controller.changeproductquantity)
 
 module.exports = router;
+  

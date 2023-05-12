@@ -103,7 +103,7 @@ module.exports = {
     //   let category=await categoryHelper.getallcategory()
         console.log(product.image,"//////////////////////////////////////////////////////////////");
         console.log('cccccccc');
-        res.render('admin/admin-editproduct', { layout: 'admin-layout', admin: true, product })
+        res.render('admin/admin-editproduct', { layout: 'admin-layout', admin: true, product,usere })
     },
 
     adminupdateproduct: (req, res) => {

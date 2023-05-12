@@ -1,0 +1,111 @@
+<!-- Page Header Start -->
+<div class="container-fluid page-header mb-3 wow fadeIn" data-wow-delay="0.1s">
+  <div class="container">
+    <h1 class="display-3 mb-3 animated slideInDown">About Us</h1>
+    <nav aria-label="breadcrumb animated slideInDown">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
+        <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
+        <li class="breadcrumb-item text-dark active" aria-current="page">About
+          Us</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Table Start -->
+<div class="content">
+  <div class="container-fluid pt-4 px-4 py-6 col-sm-10">
+    <a href="/"> <button class="btn btn-success m-2">Add Product</button></a>
+    <div class="row g-4">
+      <div class="col-sm-12 col-xl-10">
+        <div class="bg-white rounded h-100 p-4">
+          <h6 class="mb-4">Product List</h6>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">No.</th>
+                <th scope="col">Item</th>
+                <th scope="col">Image</th>
+                <th scope="col">Price/kg</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Total Price</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              {{#each products}}
+             
+                <tr>
+                  
+                  <th scope="row">{{@index}}</th>
+                   
+
+                  <td>{{this.product.productname}}</td>
+
+                  <td><img
+                      style="width:50px;height:50px  "
+                      src="/pro-images/{{this.product.image}}"
+                      alt=""
+                    />
+                  </td>
+                  <td>Rs.{{this.product.price}}</td>
+
+                  <td>
+                    <button class="cart-item-count mr-3" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1)" >-</button>
+                    <span id="{{this.product._id}}">{{this.quantity}}</span>
+                    <button class="cart-item-count ml-3"onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1)"
+                    >+</button>
+       
+           <td>Rs.{{this.total}}</td>
+            
+ 
+  <td>
+                    <a href="/" class="btn btn-danger btn-sm">remove</a>
+
+                  </td>
+                </tr>
+               
+ {{/each}}
+ 
+            </tbody>
+          </table>
+          <hr />
+          <h3 style="text-align: right" class="text-bold mt-5">Total: Rs.1000</h3>
+          <div class="d-flex justify-content-end">
+            <a href="/orderpage" class="w-25 btn btn-success rounded-pill">Place
+              Order</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+  function changeQuantity(cartId, proId, count) {
+     console.log('notenterrrrrrrr')  
+     let quantity = parseInt(document.getElementById(proId).innerHTML) 
+     count = parseInt(count)
+  $.ajax({ 
+    url: '/change-product-quantity',
+     data: { 
+        cart: cartId, 
+     product:proId, 
+     count: count, 
+     quantity: quantity 
+     }, 
+     method: 'post', 
+     success: (response) => {
+         if (response.removeproduct)
+          { alert("product removed from cart")
+  console.log("not problemmmmmm") 
+  location.reload() 
+    } else {
+  document.getElementById(proId).innerHTML = quantity + count 
+  } } }) }
+</script>

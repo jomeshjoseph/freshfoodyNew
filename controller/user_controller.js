@@ -1,4 +1,5 @@
 const userHepler=require('../helpers/user-helpers')
+const verifylogin=require('../middleware/user_session')
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const serviceid=process.env.TWILIO_AUTH_Sid;
@@ -93,14 +94,14 @@ res.redirect('/profile')
     }
 
 ,
-    profile:(req,res)=>{
+    profile:async(req,res)=>{
         if(req.session.loggedIn){
             let user=req.session.user
             console.log(user,">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-
+let cartcount=await userHepler.getcartcount(user._id)
             userHepler.getallproducts().then((allproducts)=>{
                 console.log(allproducts,'prprprprprprrp');
-                res.render('user/user_profile',{user,allproducts})
+                res.render('user/user_profile',{user,allproducts,cartcount})
             })
            
         }else{
@@ -143,8 +144,8 @@ res.redirect('/profile')
     }),
 
     Reotp : ((req , res) => {
-        // res.render('user/OTP_verify')
-        userHepler.doOtp(req.body)
+        console.log(req.body,'tttttttto');
+        userHepler.doReOtp(req.body)
     })
     
     ,
@@ -189,10 +190,111 @@ res.redirect('/profile')
             console.log("//////////////////////////////////////////////////////////////");
             res.render('user/productsingle', {user:true ,usere, product});
         
+    },
+
+    // userdetails:(req,res)=>{
+    //     let user=await db.get().collection(collections.USER_COLLECTION).findOne({ email:data.email })
+    //     let user=req.session.user
+    //    res.render('user/userdetails',{user:true,user})
+    // },
+
+    userdetails:async(req,res)=>{
+        if(req.session.loggedIn){
+            // let user=req.session.user
+            
+
+           
+            let user = await userHepler.getuserdetails(req.params.id)
+            console.log(user,"yyyyyyyyy");
+                res.render('user/userdetails',{user})
+        
+       
     }
 
 
+},
+edituserdetailspage:(req,res)=>{
+    if(req.session.loggedIn){
+        let user=req.session.user
+        console.log(user,"edituserrrrrrr");
+
+       
+           
+            res.render('user/edit-userdetails',{user})
+    
    
+}
+
+},
+updateuserdetails: (req, res) => {
+ 
+    console.log('userrrrrrrrupdateee');
+    let user=req.session.user
+    
+    let proId = req.params.id
+    let prodetails = req.body
+    console.log(proId);
+    console.log(prodetails,'detailsssssssssss');
+
+    userHepler.userupdate(proId, prodetails).then(() => {
+        // res.render('admin/admin-homepage', { layout: 'admin-layout', admin: true })
+        res.render('user/userdetails',{user})
+
+    })
+},
+editpassword:async(req,res)=>{
+    if(req.session.loggedIn){
+        // let user=req.session.user
+        
+
+       
+        let user = await userHepler.getuserdetails(req.params.id)
+        console.log(user,"paswwww");
+            res.render('user/password-change',{user})
+    
+   
+}
+
+},
+getcartpage:async(req,res)=>{
+
+    let products= await userHepler.getcartproducts(req.session.user._id )
+    let cartcount=await userHepler.getcartcount(req.session.user._id)
+   
+    console.log(req.session.user._id);
+    console.log(products,'carttttttttttttproddddd');
+   
+
+    res.render('user/cart',{products, user:req.session.user,cartcount})
+},
+
+addtocart:(req,res)=>{
+    console.log(req.params.id,'idddddd');
+    console.log(req.session.user._id);
+    userHepler.addtocart(req.params.id,req.session.user._id).then(()=>{
+       res.json({status:true})
+        res.redirect('/profile')
+    })
+},
+
+getorderpage:async(req,res)=>{
+
+    let eachproducttotal=await userHepler.geteachproducttotal(req.session.user._id)
+    if(req.session.loggedIn){
+        let user=req.session.user
+
+        res.render('user/order',{user,eachproducttotal})
+    }
+   
+},
+
+changeproductquantity:(req,res,next)=>{
+userHepler.changeproductquantity(req.body).then((response)=>{
+    res.json(response)
+
+})
+
+}
      
     
    

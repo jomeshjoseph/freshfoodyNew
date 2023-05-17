@@ -66,8 +66,26 @@ module.exports = {
 
 
 
-  }
+  },
 
+  
+getAllProducts: () => {
+  return new Promise(async (resolve, reject) => {
+      let product = await db.get().collection(collections.PRODUCT_COLLECTION).find().toArray()
+      
+      resolve(product)
+
+  })
+},
+
+
+getFilterProduct : ((category) => {
+  return new Promise(async(resolve , reject) => {
+    let product =await db.get().collection(collections.PRODUCT_COLLECTION).find({categoryname : category}).toArray()
+    resolve(product)
+  })
+})
+  
 
 
 

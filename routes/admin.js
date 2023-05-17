@@ -28,7 +28,7 @@ var storage = multer.diskStorage({
 const {adminlogin,adminreg,admininfo,adminhomepage,adminallusers,adminBlockUser, 
     adminUnBlockUser,adminallproducts,adminaddproductpage,adminaddproduct,logout,admineditproduct,
     adminupdateproduct,admindeleteproduct,adminaddcategorypage,adminaddcatogory,adminallcategory,
-    admindeletecategory,admineditcategory,adminupdatecategory} = require('../controller/admin_controller');
+    admindeletecategory,admineditcategory,adminupdatecategory,adminallorders} = require('../controller/admin_controller');
 
 
 router.get('/',adminlogin)
@@ -51,6 +51,7 @@ router.post('/addcategory',adminaddcatogory)
 router.get('/deletecategory/:id',admindeletecategory)
 router.get('/editcategory/:id',admineditcategory)
 router.post('/updatecatogery/:id',adminupdatecategory)
+router.get('/allorders',adminallorders)
 
 
 

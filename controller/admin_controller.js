@@ -190,8 +190,15 @@ console.log(proId);
             res.redirect('/admin/allcategory')
 
         })
-    }
-      
+    },
+
+   adminallorders: async (req, res) => {
+        console.log("ordersssssss");
+        adminHepler.getallorders().then((allorders) => {
+            res.render('admin/admin-ordertable', { layout: 'admin-layout', allorders, admin: true })
+
+        })
+    },   
   
             
     

@@ -1,0 +1,68 @@
+<!-- Page Header Start -->
+<div class="container-fluid page-header mb-3 wow fadeIn" data-wow-delay="0.1s">
+  <div class="container">
+    <h1 class="display-3 mb-3 animated slideInDown">About Us</h1>
+    <nav aria-label="breadcrumb animated slideInDown">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
+        <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
+        <li class="breadcrumb-item text-dark active" aria-current="page">About
+          Us</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Table Start -->
+<div class="content">
+  <div class="container-fluid pt-4 px-4 py-6 col-sm-10">
+    {{!-- <a href="/"> <button class="btn btn-success m-2">Add Product</button></a> --}}
+    <div class="row g-4">
+      <div class="col-sm-12 col-xl-10">
+        <div class="bg-white rounded h-100 p-4">
+          <h6 class="mb-4">Order List</h6>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+            
+                <th scope="col">Date</th>
+                <th scope="col">Address</th>
+                <th scope="col">Pincode</th>
+                 <th scope="col">Mobile</th>
+                <th scope="col">Total Amount</th>
+                <th scope="col">Status</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              {{#each orders}}
+             
+                <tr>
+                  
+                  {{!-- <th scope="row">{{@index}}</th> --}}
+                   
+
+                  <td>{{this.deliverydetails.date}}</td>
+
+                  <td>{{this.deliverydetails.address}}</td>
+                   <td>{{this.deliverydetails.pincode}}</td>
+                    <td>{{this.deliverydetails.mobile}}</td>
+                  
+                  <td>Rs.{{this.totalAmount}}</td>
+<td>{{this.status}}</td>
+                
+                    
+       
+         
+            
+ 
+
+                </tr>
+               
+ {{/each}}
+ 
+            </tbody>
+          </table>
+        
+        

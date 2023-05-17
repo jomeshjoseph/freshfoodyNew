@@ -1,0 +1,47 @@
+            <!-- Table Start -->
+       <div class="content">
+ <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-10">
+                        <div class="bg-secondary rounded h-100 p-4">
+                            <h6 class="mb-4">User List</h6>
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                      <th scope="col">Date</th>
+                                        <th scope="col">paymentmethod</th>
+                                           <th scope="col">Address</th>
+                                         <th scope="col">Pincode</th>
+                                        <th scope="col">Total Amount</th>
+                                        <th scope="col">status</th>
+                                       
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each allorders}}
+                                    <tr>
+                                       
+                                        <td>{{this.deliverydetails.date}}</td>
+                                        <td>{{this.paymentmethod}}</td>
+                                        <td>{{this.deliverydetails.address}}</td>
+                                        <td>{{this.deliverydetails.pincode}}</td>
+                                        <td>{{this.totalAmount}}</td>
+                                         <td>{{this.status}}</td>
+                                      
+
+                                        
+
+                                    </tr>
+                                   {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+
+       </div>
+           
+            <!-- Table End -->

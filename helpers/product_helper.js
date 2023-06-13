@@ -148,9 +148,49 @@ cancelStockUpdate : (prodId , quantity) => {
       resolve()
   })
 },
+addProductOffer: (details, prodId) => {
+  return new Promise(async (resolve, reject) => {
+      let response = {}
+      let prodIdExist = await db.get().collection(collections.PRODUCT_OFFER).findOne({ prodId: prodId })
+      if (prodIdExist) {
+          db.get().collection(collections.PRODUCT_OFFER).updateOne({prodId : prodId},{
+              $set: {
+                  discount: details.discount,
+                  startDate: details.startdate,
+                  endDate: details.endingdate,
+              }
+          }).then((response) => {
+              resolve(response)
+          })
+      }
+      else {
+          db.get().collection(collections.PRODUCT_OFFER).insertOne(
+              {
+                  prodId: prodId,
+                  discount: details.discount,
+                  startDate: details.startdate,
+                  endDate: details.endingdate,
+                  status: true
+              }
+          ).then((response) => {
+              resolve(response)
+          })
+      }
 
+  })
+},
 
-
+addOfferPrice : async (data , product) => {
+  let price = product.price
+  let discount = data.discount
+  let prodId = product._id
+  const response = await new Promise((resolve, reject) => {
+      let offerPriceInt = Math.floor(price - (price * discount) / 100);
+      let offerPrice = offerPriceInt.toString();
+      db.get().collection(collections.PRODUCT_COLLECTION).updateOne({ _id: ObjectId(prodId) }, { $set: { offerPrice: offerPrice, discount: discount } });
+  });
+  resolve(response);
+},
 
 
 

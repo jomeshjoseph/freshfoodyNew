@@ -291,6 +291,24 @@ console.log(proId);
             res.redirect('/admin/offer')
         })
     },
+
+    productCoupen (req , res) {
+        product_helper.getallproducts().then((product) => {       
+            res.render('admin/productOffer' , { layout: 'admin-layout', admin:true, product})
+        })
+    },
+    productOfferPost (req , res) {
+        let prodId = req.params.id
+        console.log(prodId,'prodIdddddddddddddddd');
+        // const productCode = Math.random().toString(36).substring(2, 10);
+        
+         product_helper.addProductOffer(req.body , prodId ).then(async(response) => {
+             let singleProduct = await product_helper.getproductdetails(prodId)
+             product_helper.addOfferPrice(req.body , singleProduct).then((response) => {
+             })
+             res.redirect('/admin/productOffer')
+         })
+     },
       
 
     

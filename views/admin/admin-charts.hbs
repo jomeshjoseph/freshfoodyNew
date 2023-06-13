@@ -144,9 +144,9 @@
                     <!-- Chart Start -->
                     <div class="container-fluid pt-4 px-4">
                         <div class="col-sm-12 col-xl-12">
-                            <div class="bg-white rounded h-100 p-4">
-                                <h6 class="mb-4">Payment Method</h6>
-                                {{!-- <canvas id="myChart"></canvas> --}}
+                            <div class="bg-white rounded h-100 p-2">
+                                <h6 class="mb-4">salse-revenue</h6>
+                                
                                 <canvas id="salse-revenue"></canvas>
                             </div>
                         </div>
@@ -209,35 +209,7 @@
 <script src="lib/chart/chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 </script>
-{{!-- <script>
-var xValues = ["CASH ON DELIVERY", "ONLINE"];
-var yValues = [ {{ data.COD }}, {{ data.RAZORPAY }} ];
-var barColors = [
-  "#b91d47",
-  "#00aba9",
-  "#2b5797",
-  "#e8c3b9",
-  "#1e7145"
-];
 
-new Chart("myChart", {
-  type: "pie",
-  data: {
-    labels: xValues,
-    datasets: [{
-      backgroundColor: barColors,
-      data: yValues
-    }]
-  },
-  options: {
-    title: {
-      display: true,
-      text: "PAYMENT METHOD USED"
-      
-    }
-  }
-});
-</script> --}}
 <script>
     function generatePDF() {
       const element = document.getElementById('invoice');
@@ -256,7 +228,7 @@ new Chart("myChart", {
     }
 </script>
 
-<SCript>
+<script>
     //doughnut
   var ctxD = document.getElementById("doughnutChart").getContext('2d');
   var myLineChart = new Chart(ctxD, {
@@ -274,8 +246,10 @@ new Chart("myChart", {
    
     }
   });
-</SCript>
-    var ctxD = document.getElementById("salse-revenue").getContext("2d");
+</script>
+
+<script>
+ var ctxD = document.getElementById("salse-revenue").getContext("2d");
     var myChart2 = new Chart(ctxD, {
         type: "line",
         data: {
@@ -283,7 +257,7 @@ new Chart("myChart", {
             datasets: [{
                     label: "Salse",
                     data: [15, 30, 55, 45, 70, 65, 85],
-                    backgroundColor: "rgba(235, 22, 22, .7)",
+                    backgroundColor: "rgba(75, 150, 20, 10)",
                     fill: true
                 },
                 {
@@ -298,3 +272,5 @@ new Chart("myChart", {
             responsive: true
         }
     });
+</script>
+   

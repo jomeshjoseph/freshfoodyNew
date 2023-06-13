@@ -10,8 +10,8 @@
           <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-secondary navbar-dark">
-                <a href="index.html" class="navbar-brand mx-4 mb-3">
-                   <h1 class="fw-bold text-danger m-0">F<span class="text-success">oo</span>dy</h1>
+                <a href="index.html" class="navbar-brand mb-3">
+                   <h1 class="fw-bold text-danger">F<span class="text-success">oo</span>dy</h1>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
@@ -32,8 +32,16 @@
                     <a href="/admin/allproducts" id="products-link" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Products</a>
                     <a href="/admin/allcategory" id="category-link" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Category</a>
                     <a href="/admin/allorders" id="order-link" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Orders</a>
-                    <a href="/admin/offer" id="offer-link" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Offer Managment</a>
-                    <a href="/admin/allreports" id="order-link" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Reports</a>
+                    {{!-- <a href="/admin/offer" id="offer-link" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Offer </a> --}}
+                     <div class="nav-item dropdown">
+                        <a href="#" id="offer-link"  class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Offers</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="/admin/offer" id="offer-link" class="nav-item nav-link"></i>Coupens</a>
+                            <a href="/admin/productOffer" class="dropdown-item">Product Offer</a>
+                            <a href="#" class="dropdown-item">Category Offer</a>
+                        </div>
+                    </div>
+                      <a href="/admin/allreports" id="order-link" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Reports</a>
                 </div>
 
    

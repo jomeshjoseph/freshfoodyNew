@@ -412,6 +412,7 @@ console.log(coupens,'coupensssss');
   productPaginationforproduct: async (req, res) => {
     let user = req.session.user;
     // console.log(user, req.query, "jdklllllllllllllllllll");
+    
     let catFilter = await categoryHelper.getallcategory();
     let pageCount = req.query.id || 1;
     // console.log(pageCount, "mmmmmmmmmmmmmmmmmmmmmmmmmm");
@@ -615,6 +616,10 @@ placedOrderCancel: (async (req, res) => {
   }
   res.json({ status: true })
 }),
-
+productCoupen (req , res) {
+  product_helper.getallproducts().then((product) => {       
+      res.render('admin/productOffer' , { layout: 'admin-layout', admin:true, product})
+       })
+    },
 
 };

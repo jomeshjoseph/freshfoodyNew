@@ -64,6 +64,11 @@
                             </a>
                         <div class="dropdown-menu m-0">
                                {{#if user}}
+                               {{!-- <form action="/userdetails" method="post">
+  <input type="hidden" name="userId" value="{{user._id}}">
+  <button type="submit" class="dropdown-item">Profile</button>
+</form> --}}
+
                                <a href="/userdetails/{{user._id}}" class="dropdown-item">Profile</a>
                            <a href="/logout" class="dropdown-item">Logout</a>
                             {{else}}

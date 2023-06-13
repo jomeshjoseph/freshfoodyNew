@@ -2,7 +2,7 @@
 :root {
     --primary: #b81515;
     --secondary: #241a19;
-    --light: #fcfcfc;
+    --light: #eaedf9;
     --dark: #131212;
 }
 
@@ -80,7 +80,7 @@
 
 .content {
     margin-left: 250px;
-    min-height: 31vh;
+    min-height: 100vh;
     background: var(--light);
     transition: 0.5s;
 }

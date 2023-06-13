@@ -1,13 +1,16 @@
 <!-- Table Start -->
 <div class="content">
     <div class="container-fluid pt-4 px-4 col-sm-12">
-        <a href="/admin/addproductpage"> <button class="btn btn-success m-2">Add Product</button></a>
+        <div class=" d-flex justify-content-end">
+<a href="/admin/addproductpage"> <button class="btn btn-success m-2">Add Product</button></a>
+        </div>
+        
         <div class="row g-4">
             <div class="col-sm-12 col-xl-12">
                 <div class="bg-white rounded h-100 p-4">
-                    <h3 class="mb-3 text-dark">Product List</h3>
+                    <h2 class=" text-dark">Products</h2>
                      <div class="bg-white rounded h-100 p-4 mb-2 mt-2">
-                    <table id="myTable" class=" table table-hover text-dark ">
+                    <table id="myproduct" class=" table table-hover text-dark ">
                         <thead>
                             <tr>
                                 
@@ -40,8 +43,9 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
 <script>
-    let table = new DataTable('#myTable');
+    let table = new DataTable('#myproduct');
 </script>
 <script>
     function confirmDelete(event, proId) {

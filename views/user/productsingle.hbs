@@ -10,11 +10,11 @@
               aria-label="Slide 2"></button>
            
           </div>
-          <div class="carousel-inner">
+          <div id="zoom1"  class="carousel-inner">
             <div class="carousel-item active">
               <img src="/pro-images/{{product.image.[0]}}" class="d-block w-100" alt="...">
             </div>
-            <div class="carousel-item">
+            <div  class="carousel-item">
               <img src="/pro-images/{{product.image.[1]}}" class="d-block w-100" alt="...">
             </div>
             
@@ -59,5 +59,20 @@
 
 
 
-
+<script>
+            const container=document.getElementById('zoom1')
+            const img=document.querySelector('img');
+        
+            container.addEventListener("mousemove",(e)=>{
+                const x= e.clientX -e.target.offsetLeft;
+                const y= e.clientX -e.target.offsetTop;
+                console.log(x,y)
+                img.style.transformOrigin=`${x}px ${y}px`;
+                img.style.transform="scale(2)"
+            })
+            container.addEventListener("mouseleave",()=>{
+                img.style.transformOrigin='center';
+                img.style.transform='scale(1)'
+            })
+        </script>
 

@@ -32,10 +32,18 @@ module.exports = {
         let totalUsers = await adminHepler.getTotalUsers()
         let totalproduct=await adminHepler.getTotalproductcount()
 
+
+        let yearly = await adminHepler.getYearlySalesGraph()
+        let daily = await adminHepler.getDailySalesGraph()
+        let weekly = await adminHepler.getWeeklySalesGraph()
+
         let dailySales = await adminHepler.getDailySales()
         let weeklySales = await adminHepler.getWeeklySales()
         let yearlySales = await adminHepler.getYearlySales()
 
+        let data = await adminHepler.getAllData()
+        console.log(data,'dataaaaaaaaa');
+        let orderData = await adminHepler.getAllOrderData()
 
         console.log(totalOrders,'ordereeeeeeeeee');
         adminHepler.adminLogin(req.body).then((response) => {
@@ -44,7 +52,7 @@ module.exports = {
                 console.log('5555555555');
                 req.session.loggedIn = true
                 req.session.admin = response.admin
-                res.render('admin/admin-charts', { layout: 'admin-layout', admin: true ,totalOrders,totalUsers,totalproduct,dailySales,weeklySales,yearlySales})
+                res.render('admin/admin-charts', { layout: 'admin-layout', admin: true ,totalOrders,totalUsers,totalproduct,dailySales,weeklySales,yearlySales,yearly,weekly,daily,data,orderData})
             } else {
                 req.session.loginerr = "Invalid Username or Password"
                 res.redirect('/admin')
@@ -214,10 +222,16 @@ console.log(proId);
         })
     },
 
-   adminallorders: async (req, res) => {
+    adminallorders: async (req, res) => {
         console.log("ordersssssss");
         adminHepler.getallorders().then((allorders) => {
             res.render('admin/admin-ordertable', { layout: 'admin-layout', allorders, admin: true })
+
+        })
+    },getallreport: async (req, res) => {
+        console.log("ordersssssss");
+        adminHepler.getallorders().then((allorders) => {
+            res.render('admin/admin-reports', { layout: 'admin-layout', allorders, admin: true })
 
         })
     },
@@ -261,7 +275,22 @@ console.log(proId);
             // Render an error page or send an error response
             res.status(500).send('Internal Server Error');
           });
-      }
+      },
+      viewOffer (req , res) {
+       adminHepler.viewCoupens().then((coupen) => {
+            res.render('admin/admin-view-offer' , {layout: 'admin-layout', admin:true,coupen , oferEror:req.session.Eror})
+            req.session.Eror = null
+        })
+    },
+    addCoupenPost (req , res) {
+        const couponCode = Math.random().toString(36).substring(2, 10);
+        adminHepler.addCoupen(req.body , couponCode).then((response) => {
+            if(response.message){
+                req.session.Eror = response.message
+            }
+            res.redirect('/admin/offer')
+        })
+    },
       
 
     

@@ -6,6 +6,8 @@ const user_controller = require("../controller/user_controller");
 const userHeplers = require("../helpers/user-helpers");
 const usermiddle=require("../middleware/user_session")
 // var moment = require('moment'); // require
+var slug = require('slug')
+
 
 const verifylogin = (req, res, next) => {
   if (req.session.loggedIn) {
@@ -21,7 +23,7 @@ router.get('/products',user_controller.productPaginationforproduct)
 router.get("/login",user_controller.loginPage);
 router.get("/register" ,user_controller.registerPage);
 router.post("/loginsubmit", user_controller.submit);
-router.get("/profile",usermiddle.sessionCheck, user_controller.profile);
+router.get("/profile",usermiddle.sessionCheck,user_controller.profile);
 router.get("/logout",usermiddle.sessionCheck, user_controller.logout);
 router.post("/signup", user_controller.signupsub);
 router.get("/contact",usermiddle.sessionCheck, user_controller.contact);
@@ -46,4 +48,8 @@ router.post("/filter", user_controller.categoryFilter);
 router.get("/orderlist", user_controller.orderlist);
 router.post("/verify-payment",user_controller.paymentverify)
 router.get('/orderdetailpage/:id',user_controller.getorderproduct)
+router.post('/coupen-verify' ,user_controller.coupenVerify)
+router.post('/returnorder/:id',usermiddle.sessionCheck ,user_controller.returnOrder)
+router.post('/placedordercancel/:id' ,user_controller.placedOrderCancel)
+router.get('/ordersummary/:id',user_controller.getordersummary)
 module.exports = router;

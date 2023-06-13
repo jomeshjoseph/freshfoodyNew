@@ -126,7 +126,7 @@
             type: 'post',
             data: $('#checkoutForm').serialize(),
             success: (response) => {
-
+const orderId=response.orderId
  if(response.CODsuccess){
 
     swal.fire(
@@ -134,17 +134,11 @@
                     'Your order is placed successfully!',
                     'success'
                 ).then(() => {
-                        location.href='/orderlist'
+                        location.href='/ordersummary/'+orderId
 
                 })
                     }else{
 razorpaypayment(response)
- swal.fire( 'Good job!',
-                    'Your order is placed successfully!',
-                    'success'
-                    ).then(()=>{
-                        location.href='/orderlist'
-                    })
                        
 
 
@@ -168,7 +162,10 @@ function razorpaypayment(order){
     "image": "https://example.com/your_logo",
     "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
     "handler": function (response){
-       
+        response.razorpay_payment_id
+        response.razorpay_order_id
+      response.razorpay_signature
+
         verifypayment(response,order)
     },
     "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
@@ -187,13 +184,32 @@ var rzp1 = new Razorpay(options);
 rzp1.open();
 }
 function verifypayment(payment,order){
+  const orderId=order.receipt
  $.ajax({
     url:'/verify-payment',
     data:{
       payment,
       order
     },
-    method:'post'
+    method:'post',
+    success:(response)=>{
+      if(response.status){
+swal.fire( 'Good job!',
+                    'Your order is placed successfully!',
+                    'success'
+                    ).then(()=>{
+                        location.href='/ordersummary/'+orderId
+                    })
+ 
+      }else{
+       swal.fire( 'Error!',
+                    'Your order is not placed ',
+                    'error'
+                    ).then(()=>{
+                        location.href='/orderlist'
+                    })
+      }
+    }
   })
 }  
 </script>

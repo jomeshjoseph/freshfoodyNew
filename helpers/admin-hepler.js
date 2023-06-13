@@ -156,14 +156,13 @@ module.exports = {
           response.status = false;
           reject({ error: "This Name Already Exist", status: false });
         } else {
-          response.success=true
+          response.success = true;
           await db
             .get()
             .collection(collections.CATEGORY_COLLECTION)
             .insertOne(data);
-          
-            resolve({ data, success: true });
-          
+
+          resolve({ data, success: true });
         }
       } catch (error) {
         reject({ error: "An error occurred", status: false });
@@ -208,7 +207,7 @@ module.exports = {
       console.log(allorders);
     });
   },
-  
+
   changeorderstatus: (data) => {
     let orderId = data.order;
     let value = data.valueChange;
@@ -357,19 +356,200 @@ module.exports = {
       resolve(yearlySales[0]?.total || 0);
     });
   },
+  getYearlySalesGraph: () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const sales = await db
+          .get()
+          .collection(collections.ORDER_COLLECTION)
+          .aggregate([
+            {
+              $project: {
+                date: { $toDate: "$date" },
+                totalAmount: 1,
+              },
+            },
+            {
+              $group: {
+                _id: { $dateToString: { format: "%Y", date: "$date" } },
+                total: { $sum: "$totalAmount" },
+                count: { $sum: 1 },
+              },
+            },
+            {
+              $sort: {
+                _id: 1,
+              },
+            },
+            {
+              $limit: 7,
+            },
+          ])
+          .toArray();
+        resolve(sales);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
+
+  getDailySalesGraph: () => {
+    return new Promise(async (resolve, reject) => {
+      let dailysales = await db
+        .get()
+        .collection(collections.ORDER_COLLECTION)
+        .aggregate([
+          {
+            $project: {
+              date: { $toDate: "$date" },
+              totalAmount: 1,
+            },
+          },
+          {
+            $group: {
+              _id: { $dateToString: { format: "%d-%m-%Y", date: "$date" } },
+              total: { $sum: "$totalAmount" },
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $sort: {
+              _id: 1,
+            },
+          },
+          {
+            $limit: 7,
+          },
+        ])
+        .toArray();
+
+      resolve(dailysales);
+    });
+  },
+
+  getWeeklySalesGraph: () => {
+    return new Promise(async (resolve, reject) => {
+      let dailysales = await db
+        .get()
+        .collection(collections.ORDER_COLLECTION)
+        .aggregate([
+          {
+            $project: {
+              date: { $toDate: "$date" },
+              totalAmount: 1,
+            },
+          },
+          {
+            $group: {
+              _id: { $week: "$date" },
+              total: { $sum: "$totalAmount" },
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $sort: {
+              _id: 1,
+            },
+          },
+          {
+            $limit: 7,
+          },
+        ])
+        .toArray();
+      resolve(dailysales);
+    });
+  },
+
+  getAllData: () => {
+    return new Promise(async (resolve, reject) => {
+      let data = {};
+
+      data.COD = await db
+        .get()
+        .collection(collections.ORDER_COLLECTION)
+        .find({ paymentmethod: "COD" })
+        .count();
+
+      data.RAZORPAY = await db
+        .get()
+        .collection(collections.ORDER_COLLECTION)
+        .find({ paymentmethod: "ONLINE" })
+        .count();
+
+      resolve(data);
+    });
+  },
+
+  getAllOrderData: () => {
+    return new Promise(async (resolve, reject) => {
+        let orderData = {}
+
+        orderData.PLACED = await db.get().collection(collections.ORDER_COLLECTION).find({ status: "placed" }).count()
+        orderData.DELIVERED = await db.get().collection(collections.ORDER_COLLECTION).find({ status: "Delivered" }).count()
+        // orderData.CANCEL = await db.get().collection(collections.ORDER_COLLECTION).find({ status: "order cancelled" }).count()
+        orderData.PENDING = await db.get().collection(collections.ORDER_COLLECTION).find({ status: "pending" }).count()
+        orderData.SHIPPED = await db.get().collection(collections.ORDER_COLLECTION).find({ status: "Shipped" }).count()
+        // orderData.ORDERCANCEL = await db.get().collection(collections.ORDER_COLLECTION).find({ status: "order cancelled" }).count()
+
+        resolve(orderData)
+    })
+},
+
   singleorderdetails: (oneorderId) => {
     return new Promise(async (resolve, reject) => {
       try {
-        let orderDetail = await db.get().collection(collections.ORDER_COLLECTION).findOne({ _id: ObjectId(oneorderId) });
+        let orderDetail = await db
+          .get()
+          .collection(collections.ORDER_COLLECTION)
+          .findOne({ _id: ObjectId(oneorderId) });
         resolve(orderDetail);
       } catch (error) {
         reject(error);
       }
     });
-  }
+  },
 
+  viewCoupens: () => {
+    return new Promise((resolve, reject) => {
+      let coupen = db
+        .get()
+        .collection(collections.COUPON_COLLECTION)
+        .find()
+        .toArray();
+      resolve(coupen);
+    });
+  },
+  addCoupen: (coupenDetails, code) => {
+    return new Promise(async (resolve, reject) => {
+      let response = {};
+      let coupenExist = await db
+        .get()
+        .collection(collections.COUPON_COLLECTION)
+        .findOne({ code: coupenDetails.code });
 
-
-
-
+      if (coupenExist) {
+        response.status = true;
+        response.message = "Coupen with this code is already exists";
+        resolve(response);
+      } else {
+        db.get()
+          .collection(collections.COUPON_COLLECTION)
+          .insertOne({
+            name: coupenDetails.name,
+            code: code,
+            startDate: coupenDetails.startdate,
+            endingDate: coupenDetails.endingdate,
+            value: coupenDetails.discount,
+            minAmount: coupenDetails.minAmount,
+            maxAmount: coupenDetails.maxAmount,
+            status: true,
+          })
+          .then((response) => {
+            response.status = false;
+            response.message = "Coupen added successfully";
+            resolve(response);
+          });
+      }
+    });
+  },
 };

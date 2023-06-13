@@ -87,7 +87,7 @@
                 <!-- Email input -->
                 <div class="col-md-6">
                   <div class="form-floating">
-                    <input type="email" id="registerEmail" placeholder="Email" class="form-control" name="email" />
+                    <input type="email" id="registerEmail" placeholder="Email" class="form-control" name="email" required/>
                     <label class="form-label" for="registerEmail">Email</label>
                   </div>
                 </div>
@@ -95,23 +95,26 @@
                 <div class="col-md-6">
                   <div class="form-floating">
                     <input type="number" id="registercontactNumber" placeholder="Phone Number" class="form-control"
-                      name="phone" />
+                      name="phone" required />
                     <label class="form-label" for="registerUsername">Phone Number</label>
                   </div>
                 </div>
                 <!-- Password input -->
                 <div class="col-md-6">
                   <div class="form-floating">
-                    <input type="text" id="registerUsername" placeholder="Re enter Password" class="form-control" />
+                    <input type="text" id="registerUsername" placeholder="Re enter Password" class="form-control" required/>
                     <label class="form-label" for="registerPassword">Password</label>
+                   
+
                   </div>
                 </div>
                 <!-- Password input -->
                 <div class="col-md-6">
                   <div class="form-floating">
                     <input type="password" id="registerPassword" placeholder="Password" class="form-control"
-                      name="repassword" />
+                      name="repassword" required/>
                     <label class="form-label" for="registerRepeatPassword">Re enter Password</label>
+                     <p id="message">Password is <span id="strength" hidden></span></p>
                   </div>
                 </div>
               </div>
@@ -132,6 +135,27 @@
       </div>
     </div>
     <!-- Contact End -->
+
+<script>
+  var pass = document.getElementById("registerPassword");
+  var msg = document.getElementById("message");
+  var str = document.getElementById("strength");
+
+  pass.addEventListener('input',()={
+  
+    if(pass.value.length < 4){
+str.innerHTML="weak"
+    }
+    else if(pass.value.length >= 4&& pass.value.length< 8){
+str.innerHTML="medium"
+    }
+    else if(pass.value.length >= 8){
+str.innerHTML="strong "
+    }
+  })
+</script>
+
+
     <script>
       $("#login-submit").submit((e) => {
         e.preventDefault();
@@ -202,3 +226,12 @@
         })
       })
     </script>
+
+   
+<script>
+function checkPasswordStrength(password) {
+  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+  return passwordRegex.test(password);
+}
+
+</script>

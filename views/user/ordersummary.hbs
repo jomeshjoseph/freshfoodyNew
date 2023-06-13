@@ -1,0 +1,48 @@
+        <!-- Modal -->
+        {{!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+          aria-hidden="true"> --}}
+          <div class="modal-dialog justify-content-center" style="margin-top:10rem;" >
+            <div class="modal-content mt-5"  style="background-color: #c6f3cf;">
+              <div class="modal-header border-bottom-0">
+                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body text-start text-black p-4">
+                <h5 class="modal-title text-uppercase mb-3" id="exampleModalLabel"  style="color: #000000;">{{user.firstname}} &nbsp; {{user.lastname}}</h5>
+                <h4 class="mb-3" style="color: #000000;">Thanks for your order</h4>
+                <p class="mb-0" style="color: #000000;">Payment summary</p>
+                <hr class="mt-2 mb-0"
+                  style="height: 0; background-color: transparent; opacity: .75; border-top: 2px dashed #e0b494;">
+<div class="d-flex justify-content-between">
+                  <p class=" mb-4">Payment Status</p>
+                  <p class="text-muted ">{{allorders.status}}</p>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <p class="fw-bold mb-0">Ether Chair(Qty:1)</p>
+                  <p class="text-muted mb-0">₹{{allorders.totalAmount}}.00</p>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                  <p class="small mb-0">{{allorders._id}}</p>
+                  <p class="small mb-0">$175.00</p>
+                </div>
+
+                <div class="d-flex justify-content-between pb-1">
+                  <p class="small">Tax</p>
+                  <p class="small">$200.00</p>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                  <p class="fw-bold">Total</p>
+                  <p class="fw-bold" style="color: #000000;">Rs.  {{allorders.totalAmount}}.00</p>
+                </div>
+
+              </div>
+              <div class="modal-footer d-flex justify-content-center border-top-0 py-2">
+                <a  class="btn btn-danger" href="/orderdetailpage/{{allorders._id}}">Track your order</a>
+                {{!-- <button type="button" href="/orderdetailpage/{{allorders._id}}" class="btn btn-primary btn-lg mb-1" style="background-color: #c6361d;"> --}}
+                  
+             
+              </div>
+            </div>
+          </div>
+        {{!-- </div> --}}

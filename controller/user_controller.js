@@ -6,6 +6,8 @@ const serviceid = process.env.TWILIO_AUTH_Sid;
 const client = require("twilio")(accountSid, authToken);
 const Swal = require("sweetalert");
 const moment = require('moment');
+var slug = require('slug')
+
 
 const Razorpay = require("razorpay");
 require("dotenv").config();
@@ -14,8 +16,10 @@ const { response, render } = require("../app");
 const collection = require("../config/collection");
 const product_helper = require("../helpers/product_helper");
 const categoryHelper = require("../helpers/category-helper");
+const orderHelper = require("../helpers/order-helper");
 
 const usermiddle = require("../middleware/user_session");
+const userHelpers = require("../helpers/user-helpers");
 module.exports = {
   loginPage: (req, res) => {
     if (req.session.loggedIn) {
@@ -79,6 +83,7 @@ module.exports = {
       .then((response) => {
         req.session.loggedIn = true;
         req.session.user = response.user;
+        console.log(response,'check userrrrrrr');
         res.json({ success: true, redirect: '/profile' });
       })
       .catch((error) => {
@@ -95,6 +100,7 @@ module.exports = {
       .then((response) => {
         req.session.loggedIn = true;
         req.session.user = response.user;
+        
         res.json({success:true, redirect:'/profile'})
       
       })
@@ -196,7 +202,7 @@ module.exports = {
   mobilesent: (req, res) => {
     // res.render('user/OTP_verify')
     userHepler.doOtp(req.body).then((response) => {
-      console.log("qqqqqqqqqq");
+      console.log(response,'mobile otppppppppp');
       if (response.status) {
         signupData = response.user;
         res.render("user/OTP_verify");
@@ -240,9 +246,10 @@ module.exports = {
 
   userdetails: async (req, res) => {
     if (req.session.loggedIn) {
-      // let user=req.session.user
-let cartcount=await userHepler.getcartcount(req.params.id)
-      let user = await userHepler.getuserdetails(req.params.id);
+      let userId=req.params.id
+      console.log(userId);
+let cartcount=await userHepler.getcartcount(userId)
+      let user = await userHepler.getuserdetails(userId);
       console.log(user, "yyyyyyyyy");
       res.render("user/userdetails", { user,cartcount });
     }
@@ -286,7 +293,9 @@ let cartcount=await userHepler.getcartcount(req.params.id)
     let products = await userHepler.getcartproducts(req.session.user._id);
     let cartcount = await userHepler.getcartcount(req.session.user._id);
     let grandtotal = await userHepler.getgrandtotal(req.session.user._id);
-
+    let coupens = await userHepler.getcurrentcoupen()
+    req.session.amount=grandtotal
+console.log(coupens,'coupensssss');
     // console.log(req.session);
 
     if (grandtotal) {
@@ -295,6 +304,7 @@ let cartcount=await userHepler.getcartcount(req.params.id)
         user: req.session.user._id,
         cartcount,
         grandtotal,
+        coupens
       });
     } else {
       res.redirect("/profile");
@@ -325,7 +335,8 @@ let cartcount=await userHepler.getcartcount(req.params.id)
     });
   },
   getorderpage: async (req, res) => {
-    let grandtotal = await userHepler.getgrandtotal(req.session.user._id);
+    // let grandtotal = await userHepler.getgrandtotal(req.session.user._id);
+    let grandtotal = req.session.amount
     let cartcount = await userHepler.getcartcount(req.session.user._id);
     if (req.session.loggedIn) {
       let user = req.session.user;
@@ -342,25 +353,35 @@ let cartcount=await userHepler.getcartcount(req.params.id)
       res.json(response);
     });
   },
+ 
+
   placeorder: async (req, res) => {
-    let products = await userHepler.getcartproductlist(req.body.userId);
-    let cartcount = await userHepler.getcartcount(req.session.user._id);
-    let totalprice = await userHepler.getgrandtotal(req.body.userId);
-    userHepler.placeorder(req.body, products, totalprice).then((orderId) => {
-      console.log(orderId, "order id");
-if(req.body["paymentmethod"] === "COD"){
-  res.json({ CODsuccess:true });
-}else{
-  userHepler.generateraorzpay(orderId,totalprice).then((response)=>{
-    res.json(response)
-    
-    // console.log(response);
-  })
-}
-    
-    });
-    // console.log(req.body);
-  },
+    try {
+        let products = await userHepler.getcartproductlist(req.body.userId);
+        let cartcount = await userHepler.getcartcount(req.session.user._id);
+        let totalprice =req.session.amount
+
+        userHepler.placeorder(req.body, products, totalprice).then((orderId) => {
+            console.log(orderId, "order id");
+
+            if (req.body["paymentmethod"] === "COD") {
+                res.json({ CODsuccess: true,orderId });
+            } else {
+                userHepler.generateraorzpay(orderId, totalprice).then((response) => {
+                    res.json(response);
+                }).catch((error) => {
+                    console.log(error);
+                    const errorMessage = 'Error generating payment';
+                    res.status(500).json({ error: errorMessage });
+                });
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        const errorMessage = 'Error placing order';
+        res.status(500).json({ error: errorMessage });
+    }
+},
 
   productPagination: async (req, res) => {
     let user = req.session.user;
@@ -455,6 +476,15 @@ if(req.body["paymentmethod"] === "COD"){
 
   paymentverify:(req,res)=>{
     console.log(req.body);
+    userHepler.verifypayment(req.body).then(()=>{
+      userHepler.changepaymentstatus(req.body['order[receipt]']).then(()=>{
+        console.log("payment syccessfuul");
+        res.json({status:true})
+      })
+    }).catch((err)=>{
+      console.log(err);
+      res.json({status:false,errMsg:'Payment Failed'})
+    })
   },
 //   getorderproduct:async(req, res)=> {
 //     const oneProductId = req.params.id
@@ -468,10 +498,123 @@ if(req.body["paymentmethod"] === "COD"){
 // }
 getorderproduct:async(req, res)=> {
   const oneProductId = req.params.id
+  
   console.log(oneProductId,"oooooooooo");
-  product_helper.getOrderProduct(oneProductId).then((oneOrderProduct) => {
-      res.render('user/orderdetail', {user: true,oneOrderProduct})
+
+ let allorders = await userHepler.singleorderdetails(oneProductId)
+ console.log(allorders,'orderrrrrrrrrrrrrrrrr');
+  product_helper.getOrderProduct(oneProductId).then((orderProduct)=>{
+    res.render('user/orderdetail', {user: true,orderProduct,allorders});
+  }).catch((error) => {
+    // Handle any errors that occur during the process
+    console.error('Error retrieving order details:', error);
+    // Render an error page or send an error response
+    res.status(500).send('Internal Server Error');
   })
+
 },
+getordersummary:async(req, res)=> {
+  const oneProductId = req.params.id
+  user=req.session.user
+  console.log(oneProductId,"oooooooooo");
+
+ let allorders = await userHepler.singleorderdetails(oneProductId)
+ console.log(allorders,'orderrrrrrrrrrrrrrrrr');
+  product_helper.getOrderProduct(oneProductId).then((orderProduct)=>{
+    res.render('user/ordersummary', {user: true,user,orderProduct,allorders});
+  }).catch((error) => {
+    // Handle any errors that occur during the process
+    console.error('Error retrieving order details:', error);
+    // Render an error page or send an error response
+    res.status(500).send('Internal Server Error');
+  })
+
+},
+
+coupenVerify: (async (req, res) => {
+  let user = req.session.user._id
+  console.log(user,'userrrrcheckkkk');
+  const date = new Date()
+  let totalAmount = await userHepler.getgrandtotal(user)
+  console.log(totalAmount, 'totalAmounttttttttttt');
+  let total = totalAmount
+
+  if (req.body.coupen == '') {
+      res.json({
+          noCoupen: true,
+          total
+      })
+  }
+
+  else {
+      let coupenResponse = await userHepler.applyCoupen(req.body, user, date, totalAmount)
+      console.log(coupenResponse, 'coupenResponseeeeeeeeeeeeeeee');
+      if (coupenResponse.verify) {
+          coupenResponse.originalPrice = totalAmount
+          let discountAmount = (parseInt(totalAmount) * parseInt(coupenResponse.coupenData.value)) / 100
+          console.log(discountAmount, "discountAmounttttttttttt");
+
+          if (discountAmount > parseInt(coupenResponse.coupenData.maxAmount)) {
+              discountAmount = parseInt(coupenResponse.coupenData.maxAmount)
+          }
+          let amount = totalAmount - discountAmount
+          coupenResponse.discountAmount = Math.round(discountAmount)
+          coupenResponse.amount = Math.round(amount)
+          req.session.amount = Math.round(amount)
+          coupenResponse.savedAmount = totalAmount - Math.round(amount)
+          console.log(">>>>>>>>><<<<<<<<<<<<", coupenResponse, 'coupenResponse2222222222');
+          res.json(coupenResponse)
+      }
+      else {
+          coupenResponse.total = totalAmount
+          res.json(coupenResponse)
+      }
+  }
+}),
+returnOrder: (async (req, res) => {
+  let ordId = req.params.id
+  let orderReturm =userHepler.returnOrder(ordId)
+  let returnReason = await orderHelper.returnReason(req.body.returnReason, ordId)
+  let oneOrder = await orderHelper.getStatusDetails(ordId)
+  let orderProducts = await userHepler.getProductDetails(ordId)
+  let status = oneOrder.status
+
+  if (status === 'product returned') {
+      for (let i = 0; i < orderProducts.length; i++) {
+          await product_helper.cancelStockUpdate(orderProducts[i].item, orderProducts[i].quantity)
+      }
+      let oneOrderDetails = await orderHelper.getOneOrder(ordId)
+      let totalAmount = oneOrderDetails.total
+           
+  }
+  res.json({ status: true })
+}),
+placedOrderCancel: (async (req, res) => {
+  let ordId = req.params.id
+  console.log(ordId,'ordIddddddddddddd');
+  console.log(req.body,'bodyyyyyyyyyyyyyyy reaaaaaaaaa');
+  let reason = await orderHelper.reasonUpdate(req.body.reason, ordId)
+ 
+  let ordCancel = await userHepler.orderCancel(ordId)
+  console.log(ordCancel,'ordCancel');
+  let singleOrder = await orderHelper.getStatusDetails(ordId)
+  console.log("111111111111111111111",singleOrder,'singleOrder');
+  let orderProduct = await userHepler.getProductDetails(ordId)
+  let status = singleOrder.status
+  
+
+  if (status === 'order cancelled') {
+      for (let i = 0; i < orderProduct.length; i++) {
+          await product_helper.cancelStockUpdate(orderProduct[i].item, orderProduct[i].quantity)
+      }
+      let orderDetails = await orderHelper.getOneOrder(ordId)
+      console.log(orderDetails,'orderDetailsssssssssssssss');
+      let totalAmount = orderDetails.totalAmount
+     
+      
+  }
+  res.json({ status: true })
+}),
+
 
 };

@@ -31,10 +31,13 @@
                       <td>{{this._id}}</td>
                     
                       <td>Rs.{{this.totalAmount}}</td>
-                      <td>{{this.status}}</td>
-                      <td><a href="/orderdetailpage/{{this._id}}">View Order Details</a></td> {{!-- <td
-                        class="{{#if (this.status === 'pending')}}text-warning{{else if (eq this.status 'placed')}}text-success{{else}}text-primary{{/if}}">
-                        {{this.status}}</td> --}}
+                      <td>{{this.status}} </td>
+                   
+                      <td><a href="/orderdetailpage/{{this._id}}">View Order Details</a></td> 
+                        {{!-- <td><a href="/orderdetailpage/{{this._id}}">View Order Details</a></td>  --}}
+                        {{!-- <td><a href="/orderdetailpage/{{generateSlugFromId(this._id)}}">View Order Details</a></td> --}}
+
+
                     </tr> {{/each}} </tbody>
                 </table>
               </div>
@@ -47,3 +50,5 @@
 
 
         </script>
+
+      

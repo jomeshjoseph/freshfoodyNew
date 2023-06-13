@@ -1,0 +1,204 @@
+<!-- Table Start -->
+<div class="content">
+  <div class="container-fluid pt-2 px-4">
+  <button type="button" class="btn btn-success" 
+                    onclick="generatePDF()">Download</button>
+     <div id="salesReport" class="col-sm-12 col-xl-12">
+       <div class="card-group" >
+        <div class="col-sm-12 col-xl-4">
+          <div class="card-body p-2">
+             <div class="d-flex justify-content-start px-2 pt-2">
+           <p class="text-dark px-2 mb-0">Order Number : {{allorders._id}}</p>
+          </div>
+
+          </div>
+        </div>
+         <div class="col-sm-12 col-xl-4">
+          <div class="card-body p-2">
+             <div class="d-flex justify-content-center px-2 pt-2">
+           {{!-- <p class="text-dark mb-0">{{allorders.date}}</p> --}}
+           <h3 class="text-dark mb-0">Sales Report</h3>
+          </div>
+
+          </div>
+        </div>
+        <div class="col-sm-12 col-xl-4">
+          <div class="card-body p-2">
+             <div class="d-flex justify-content-end px-2 pt-2">
+           <p class="text-dark mb-0"> Order status:{{allorders.status}}</p>
+          </div>
+
+          </div>
+        </div>
+       </div>
+     </div>
+    
+    <div class="row g-1">
+      
+     <div class="col-sm-12 col-xl-12">
+  <div class="bg-white rounded h-100 border border-success" >
+    <div class="card-group" >
+      <div class="col-sm-12 col-xl-4">
+        <div class="card-body p-2">
+          <div class="d-flex justify-content-start px-2 pt-2">
+            <p class="fw-bold text-dark mb-0">Shipping Addres</p>
+          </div>
+      
+           <div>
+      <p class="d-flex justify-content-start px-2 pt-2 me-4 mb-0 text-capitalize"> {{allorders.deliverydetails.firstname}} </p>
+      <p class="d-flex justify-content-start me-4 px-2 mb-0 text-capitalize " > {{allorders.deliverydetails.address}} </p>
+      <p class="d-flex justify-content-start me-4 px-2 mb-0"> {{allorders.deliverydetails.pincode}} </p>
+      </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-xl-4">
+        <div class="card-body p-2">
+          <div class="d-flex justify-content-center px-2 pt-2">
+            <p class="fw-bold text-dark mb-0">Payment Method</p>
+          </div>
+          <div class="d-flex justify-content-center px-2 pt-2">
+            <p class="text-dark mb-0">{{allorders.paymentmethod}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-xl-4">
+  <div class="card-body p-2">
+    <div class="d-flex justify-content-end px-2 pt-2">
+      <p class="fw-bold text-dark mb-0">Order Summary</p>
+    </div>
+    <div>
+      <p class="d-flex justify-content-end px-2 pt-2 mb-0">
+        <span class="fw-bold me-4 mb-0">Sub Total</span>
+        Rs. {{allorders.totalAmount}}
+      </p>
+      <p class="d-flex justify-content-end px-2 mb-0">
+        <span class="fw-bold me-4 mb-0">Shipping</span>
+        Rs. 00.00
+      </p>
+      <p class="d-flex justify-content-end px-2">
+        <span class="fw-bold me-4">Discount</span>
+        Rs. 00.00
+      </p> 
+    </div>
+  </div>
+</div>
+
+    </div>
+
+    <div class="card-footer border-0 px-4 py-2" style="background-color: #089e14; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+      <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">Total paid: <span class="h4 mb-0 ms-2">₹ {{allorders.totalAmount}}</span></h5>
+    </div>
+  </div>
+</div>
+<div class="col-sm-12 col-xl-12 pt-3">
+
+<!-- Table Start -->
+       
+        <div    class="bg-white rounded h-100 p-1">
+  
+  <div class="col-sm-12 col-xl-12">
+          <div class="card-body p-2">
+             <div class="d-flex justify-content-center px-2 pt-0">
+          <h3 class="mb-0 text-dark">Orders</h3>
+          </div>
+
+          </div>
+        </div>
+        
+          <table id="orderTable" class=" table table-hover text-dark " >
+            <thead>
+              <tr>
+                <th scope="col">sl.no</th>
+                <th scope="col">Name</th>
+                <th scope="col">Date</th>
+                <th scope="col">Status</th>
+                <th scope="col">Price</th>
+                <th scope="col">Method</th>
+                <th scope="col">Status</th>
+                <th scope="col">View</th>
+              </tr>
+            </thead>
+            <tbody> {{#each allorders}} <tr>
+                <th scope="row">{{@index}}</th>
+                <td>{{this.deliverydetails.firstname}}</td>
+                <td>{{this.date}}</td>
+                <td>{{this.status}}</td>
+                <td>₹{{this.totalAmount}}</td>
+                <td>{{this.paymentmethod}}</td>
+                <td>
+                  <select onchange="deliveryStatusUpdate(value,'{{this._id}}' , {{this.userid}})"
+                    name="form-control item">
+                    <option hidden value="{{this.status}}" selected> {{this.status}} </option> {{#isEqual this.status
+                    'placed'}} <option value="Shipped">Shipped</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Cancelled">Cancelled</option> {{/isEqual}} {{#isEqual this.status 'Shipped'}} <option
+                      value="Delivered">Delivered</option>
+                    <option value="Cancelled">Cancelled</option> {{/isEqual}} {{#isEqual this.status 'Delivered'}} <h5>
+                      Delivered</h5> {{/isEqual}}
+                  </select>
+                </td>
+                <td>
+                  <a href="/admin/orderdetail/{{this._id}} " class="text-danger">Order Detail</a>
+                </td>
+              </tr> {{/each}} </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+  </div>
+</div>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+<script>
+  let table = new DataTable('#orderTable');
+</script>
+<script>
+
+
+
+  function deliveryStatusUpdate(value, orderId) {
+
+    $.ajax({
+      url: '/admin/order-status',
+      data: {
+        order: orderId,
+        valueChange: value
+      },
+      method: 'POST',
+      success: function (response) {
+        Swal.fire(
+          'Good job!',
+          'Order status Changed!',
+          'success'
+        ).then(function () {
+          location.reload();
+        });
+      }
+    });
+
+
+  }
+
+</script>
+<script>
+    function generatePDF() {
+      const element = document.getElementById('salesReport');
+      element.style.width = '1200px';
+      element.style.height = '700px';
+      let opt = {
+        margin: 10,
+        filename: 'Order-Report.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 1 },
+        jsPDF: { unit: 'mm', orientation: 'landscape' }
+      }
+      html2pdf().set(opt)
+        .from(element)
+        .save();
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

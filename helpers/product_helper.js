@@ -135,8 +135,19 @@ getOrderProduct: (oneProId) => {
       resolve(orderProduct)
   })
 },
+cancelStockUpdate : (prodId , quantity) => {
+  return new Promise((resolve , reject) => {
+      db.get().collection(collections.PRODUCT_COLLECTION).updateOne({_id : ObjectId(prodId)} , {$inc : {stock : quantity}})
+      resolve()
+  })
+},
 
-
+cancelStockUpdate : (prodId , quantity) => {
+  return new Promise((resolve , reject) => {
+      db.get().collection(collections.PRODUCT_COLLECTION).updateOne({_id : ObjectId(prodId)} , {$inc : {stock : quantity}})
+      resolve()
+  })
+},
 
 
 

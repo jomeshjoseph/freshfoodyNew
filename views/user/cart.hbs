@@ -1,4 +1,4 @@
-<div class="container-xxl py-5 ">
+<div class="container-xxl py-3 ">
   <div class="container">
     <div class="row g-0 gx-5 align-items-end">
       <div class="col-lg-6">
@@ -7,8 +7,30 @@
           <p>Tempor ut dolore lorem kasd vero ipsum sit eirmod sit. Ipsum diam justo sed rebum vero dolor duo.</p>
         </div>
       </div>
+         <!-- coupen -->
+         <div >
+ 
+                  {{#each coupens}}
+                  
+                    <div class="d-flex justify-content-center">
+                      <div class=" d-flex bg-danger align-items-center mt-2 ">
+                        <h1 class="text-white px-3">{{this.name}} </h1><hr>
+                        <h1 class="text-light px-2">{{this.value}}%<h5 class="text-white mr-5">OFF</h5>
+                        <p class="text-white px-2">For Minimum Purchase of {{this.minAmount}}</p>
+                        </h1>
+                        <div class=" p-2 ">
+                          
+                           {{!-- <a href="" class="btn btn-success " > get it </a> --}}
+                           <a href="#" class="btn btn-success" onclick="getCouponCode('{{this.code}}')">Get It</a>
+                        </div>
+                      </div>
+                    </div>
+                  {{/each}}
+                
+
+        
       <!-- cart + summary -->
-      <section class="bg-light my-5">
+      <section class="bg-light my-3">
         <div class="container">
           <div class="row">
             <!-- cart -->
@@ -97,8 +119,9 @@
                     <div class="form-group">
                       <label class="form-label">Have coupon?</label>
                       <div class="input-group">
-                        <input type="text" class="form-control border" name="" placeholder="Coupon code" />
-                        <button class="btn btn-light border">Apply</button>
+                        {{!-- <input type="text" class="form-control border" name="" placeholder="Coupon code" /> --}}
+                        <input type="text" class="form-control border" id="couponCodeInput" name="" placeholder="Coupon code" />
+                        <button class="btn btn-light border" onclick="coupon()" >Apply</button>
                       </div>
                     </div>
                   </form>
@@ -112,7 +135,8 @@
                   </div>
                   <div class="d-flex justify-content-between">
                     <p class="mb-2">Discount:</p>
-                    <p class="mb-2 text-success">-₹00.00</p>
+                    <p id="discount" class="mb-2 text-success"></p>
+                    
                   </div>
                   <div class="d-flex justify-content-between">
                     <p class="mb-2">TAX:</p>
@@ -207,4 +231,69 @@ function confirmDelete(event,proId) {
     }
   });
 }
+</script>
+<script>
+  function coupon() {
+        let coupenName = document.getElementById('couponCodeInput').value
+        console.log(couponCodeInput, "comeeeeee")
+        $.ajax({
+            url: '/coupen-verify',
+            data: {
+                coupon:coupenName
+            },
+            method: 'post',
+            success: (response) => {
+                    document.getElementById('discount').innerHTML =response.discountAmount
+
+              console.log(response)
+                Swal.fire(
+                    'Good job!',
+                    'Your coupon is applied!',
+                    'success'
+                ).then(()=>{
+                     if (response) {
+                  console.log("done!!!!!")
+                    document.getElementById('grandtotal').innerHTML = response.amount
+                    document.getElementById("Details").hidden = false
+                    document.getElementById('totalPrice').innerHTML = response.originalPrice
+                    
+                    document.getElementById('savedPrice').innerHTML = response.savedAmount
+                    
+                }
+                else {
+                    if (response.invalidDate) {
+                        document.getElementById('errorMsg').innerHTML = response.invalidDateMsg
+                        setTimeout(() => {
+                            response.invalidDateMsg = null
+                        }, 3000)
+                    }
+                    else if (response.minAmount) {
+                        document.getElementById('errorMsg').innerHTML = response.minAmountMsg
+                        setTimeout(() => {
+                            response.minAmountMsg = null
+                            location.reload()
+                        }, 3000)
+                    }
+                    else if (response.invalidCoupen) {
+                        document.getElementById('errorMsg').innerHTML = response.invalidCoupenMsg
+                        setTimeout(() => {
+                            response.invalidCoupenMsg = null
+                            location.reload()
+                        }, 3000)
+                    }
+                }
+
+                })
+
+                
+               
+            }
+        })
+    }
+</script>
+<script>
+  function getCouponCode(couponCode) {
+  document.getElementById("couponCodeInput").value = couponCode;
+}
+
 </script>

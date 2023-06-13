@@ -137,15 +137,31 @@
 
                
             </div>
+            
         <div class="row g-4">
-            <div class="col-sm-12 col-xl-12">
+            <div class="col-sm-12 col-xl-6">
                 <div class="bg-success rounded h-100 p-4">
                     <!-- Chart Start -->
                     <div class="container-fluid pt-4 px-4">
                         <div class="col-sm-12 col-xl-12">
                             <div class="bg-white rounded h-100 p-4">
                                 <h6 class="mb-4">Payment Method</h6>
-                                <canvas id="myChart"></canvas>
+                                {{!-- <canvas id="myChart"></canvas> --}}
+                                <canvas id="salse-revenue"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-sm-12 col-xl-6">
+                <div class="bg-success rounded h-100 p-4">
+                    <!-- Chart Start -->
+                    <div class="container-fluid pt-4 px-4">
+                        <div class="col-sm-12 col-xl-12">
+                            <div class="bg-white rounded h-100 p-4">
+                                <h6 class="mb-4">Order status</h6>
+                                {{!-- <canvas id="orderchart"></canvas> --}}
+                                <canvas id="doughnutChart"></canvas>
                             </div>
                         </div>
                     </div>
@@ -153,13 +169,49 @@
             </div>
            
         </div>
+        {{!-- <div class="col-12">
+              <div class="card recent-sales overflow-auto">
+                <div class="card-body">
+                  <button type="button" class="btn btn-success" style="margin-left: 960px; margin-top: 20px;"
+                    onclick="generatePDF()">Download</button>
+                    <Div id="invoice">
+                  <h5 class="card-title">Yearly Sales <span></span></h5>
+                  <table class="table table-borderless text-dark">
+                    <thead>
+                      <tr>
+                        <th scope="col ">No.</th>
+                        <th scope="col ">year</th>
+                        <th scope="col">Total Sales</th>
+                        <th scope="col">Total Revenue</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                      {{#each yearly}}
+                      <tr>
+
+                        <td>{{@index}}</td>
+                        <td>{{this._id}}</td>
+                        <td>{{this.count}}</td>
+                        <td>{{this.total}}</td>
+
+                      </tr>
+                      {{/each}}
+
+                    </tbody>
+                  </table>
+                  </Div>
+                </div>
+              </div>
+            </div> --}}
     </div>
 </div>
+<script src="lib/chart/chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 </script>
-<script>
-var xValues = ["Cash On Delivery", "Online"];
-var yValues = [35, 65];
+{{!-- <script>
+var xValues = ["CASH ON DELIVERY", "ONLINE"];
+var yValues = [ {{ data.COD }}, {{ data.RAZORPAY }} ];
 var barColors = [
   "#b91d47",
   "#00aba9",
@@ -180,9 +232,69 @@ new Chart("myChart", {
   options: {
     title: {
       display: true,
-      text: "payment Method used"
+      text: "PAYMENT METHOD USED"
       
     }
   }
 });
+</script> --}}
+<script>
+    function generatePDF() {
+      const element = document.getElementById('invoice');
+      element.style.width = '700px';
+      element.style.height = '900px';
+      let opt = {
+        margin: 10,
+        filename: 'loyalpaws.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 1 },
+        jsPDF: { unit: 'mm', orientation: 'landscape' }
+      }
+      html2pdf().set(opt)
+        .from(element)
+        .save();
+    }
 </script>
+
+<SCript>
+    //doughnut
+  var ctxD = document.getElementById("doughnutChart").getContext('2d');
+  var myLineChart = new Chart(ctxD, {
+    type: 'doughnut',
+    data: {
+      labels: ["PLACED", "DELIVERED","PENDING",'SHIPPED'],
+      datasets: [{
+        data: [{{ orderData.PLACED }}, {{ orderData.DELIVERED }}, {{ orderData.PENDING }} , {{ orderData.SHIPPED }}],
+        backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360"],
+        hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774"]
+      }]
+    },
+    options: {
+      responsive: true,
+   
+    }
+  });
+</SCript>
+    var ctxD = document.getElementById("salse-revenue").getContext("2d");
+    var myChart2 = new Chart(ctxD, {
+        type: "line",
+        data: {
+            labels: ["2016", "2017", "2018", "2019", "2020", "2021", "2022"],
+            datasets: [{
+                    label: "Salse",
+                    data: [15, 30, 55, 45, 70, 65, 85],
+                    backgroundColor: "rgba(235, 22, 22, .7)",
+                    fill: true
+                },
+                {
+                    label: "Revenue",
+                    data: [99, 135, 170, 130, 190, 180, 270],
+                    backgroundColor: "rgba(235, 22, 22, .5)",
+                    fill: true
+                }
+            ]
+            },
+        options: {
+            responsive: true
+        }
+    });

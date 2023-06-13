@@ -71,7 +71,7 @@
           <!-- Register form -->
           <div class="tab-pane fade show active " id="pills-register" role="tabpanel" aria-labelledby="tab-register">
             <!-- Username input -->
-            <form  id="register-submit" method="post" action="/signup">
+            <form  id="register-submit" >
               <div class="row  g-3 mb-3">
                 <div class="col-md-6">
                   <div class="form-floating">
@@ -105,7 +105,8 @@
                 <!-- Password input -->
                 <div class="col-md-6">
                   <div class="form-floating">
-                    <input type="text" id="registerUsername" placeholder="Re enter Password" class="form-control" />
+                    <input type="text" id="registerPasswordone" placeholder="enter Password" class="form-control" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+                     title="Password must contain at least one number, one lowercase and one uppercase letter, and be at least 8 characters long" required />
                     <label class="form-label" for="registerPassword">Password</label>
                   </div>
                 </div>
@@ -117,6 +118,8 @@
                     <label class="form-label" for="registerRepeatPassword">Re enter Password</label>
                   </div>
                 </div>
+            
+
               </div>
               <!-- Checkbox -->
               <div class="form-check d-flex justify-content-center mb-2">
@@ -135,73 +138,123 @@
       </div>
     </div>
     <!-- Contact End -->
-    <script>
-      $("#login-submit").submit((e) => {
-        e.preventDefault();
-        $.ajax({
-          url: '/loginsubmit',
-          method: 'post',
-          data: $("#login-submit").serialize(),
-          success: (response) => {
-            if (response.success) {
-              Swal.fire({
-                title: 'Logged In Successfully!',
-              }).then(() => {
-                location.href = response.redirect;
-              });
-            } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'Login Error',
-                text: response.error,
-              });
-            }
-          },
-          error: (xhr, status, error) => {
-            Swal.fire({
-              icon: 'error',
-              title: 'Login Error',
-              text: xhr.responseJSON.error, // Display the error message from the backend
-            }).then(() => {
-              location.reload()
-            })
-          }
-        });
-      });
 
-    </script>
-    <script>
-      $("#register-submit").submit((e) => {
-        e.preventDefault()
-        console.log('entered')
-        $.ajax({
-          url: '/signup',
-          method: 'post',
-          data: $("#register-submit").serialize(),
-          success: (response) => {
-             if (response.success) {
-              Swal.fire({
-                title: 'Registered Successfully!',
-              }).then(() => {
-                location.href = response.redirect;
-              });
-            } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'Login Error',
-                text: response.error,
-              });
-            }
-          }, 
-          error: (xhr, status, error) => {
+<script>
+  // Function to validate password and confirm password fields
+  function validatePassword() {
+    var password = document.getElementById("registerPasswordone").value;
+    var confirmPassword = document.getElementById("registerPassword").value;
+    
+    if (password !== confirmPassword) {
+      alert("Password and Confirm Password do not match");
+      return false;
+    }
+    
+    return true;
+  }
+  
+  // Event listener for form submission
+  document.getElementById("register-submit").addEventListener("submit", function(event) {
+    // Prevent form submission if passwords do not match
+    if (!validatePassword()) {
+      event.preventDefault();
+    }
+  });
+</script>
+
+
+
+
+<script>
+  // Function to validate password and confirm password fields
+  function validatePassword() {
+    var password = document.getElementById("registerPasswordone").value;
+    var confirmPassword = document.getElementById("registerPassword").value;
+    if (password != confirmPassword) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Password Mismatch',
+        text: 'Please make sure your passwords match.',
+      });
+      return false;
+    }
+    return true;
+  }
+
+  $(document).ready(function () {
+    $("#register-submit").submit(function (e) {
+      e.preventDefault();
+
+      if (!validatePassword()) {
+        return;
+      }
+
+      console.log('entered');
+      $.ajax({
+        url: '/signup',
+        method: 'post',
+        data: $("#register-submit").serialize(),
+        success: function (response) {
+          if (response.success) {
+            Swal.fire({
+              title: 'Registered Successfully!',
+            }).then(() => {
+              location.href = response.redirect;
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Registration Error',
+              text: response.error,
+            });
+          }
+        },
+        error: function (xhr, status, error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Registration Error',
+            text: xhr.responseJSON.error, // Display the error message from the backend
+          }).then(() => {
+            location.reload();
+          });
+        }
+      });
+    });
+
+    // Add the login form submission logic here
+    $("#login-submit").submit(function (e) {
+      e.preventDefault();
+
+      console.log('entered');
+      $.ajax({
+        url: '/login',
+        method: 'post',
+        data: $("#login-submit").serialize(),
+        success: function (response) {
+          if (response.success) {
+            Swal.fire({
+              title: 'Logged In Successfully!',
+            }).then(() => {
+              location.href = response.redirect;
+            });
+          } else {
             Swal.fire({
               icon: 'error',
               title: 'Login Error',
-              text: xhr.responseJSON.error, // Display the error message from the backend
-            }).then(() => {
-              location.reload()
-            })
+              text: response.error,
+            });
           }
-        })
-      })
-    </script>
+        },
+        error: function (xhr, status, error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Login Error',
+            text: xhr.responseJSON.error, // Display the error message from the backend
+          }).then(() => {
+            location.reload();
+          });
+        }
+      });
+    });
+  });
+</script>

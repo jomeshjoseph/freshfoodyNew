@@ -28,16 +28,18 @@ var storage = multer.diskStorage({
 const {adminlogin,adminreg,admininfo,adminhomepage,adminallusers,adminBlockUser, 
     adminUnBlockUser,adminallproducts,adminaddproductpage,adminaddproduct,logout,admineditproduct,
     adminupdateproduct,admindeleteproduct,adminaddcategorypage,adminaddcatogory,adminallcategory,
-    admindeletecategory,admineditcategory,adminupdatecategory,adminallorders} = require('../controller/admin_controller');
+    admindeletecategory,admineditcategory,adminupdatecategory,adminallorders,adminhome,getorderstatus,
+    getorderproduct,getorderdetails} = require('../controller/admin_controller');
 
 
 router.get('/',adminlogin)
 router.get('/adminsignup',adminreg)
 router.post('/adminsignup',admininfo)
 router.post('/dashboard',adminhomepage)
+router.get('/home',adminhomepage)
 router.get('/allusers',adminallusers)
-router.get('/blockUser',adminBlockUser)
- router.get('/unBlockUser',adminUnBlockUser)
+router.get('/blockUser/:id',adminBlockUser)
+ router.get('/unBlockUser/:id',adminUnBlockUser)
  router.get('/allproducts',adminallproducts)
  router.get('/addproductpage',adminaddproductpage)
  router.post('/addproduct',uploadPro.array('image') ,adminaddproduct)
@@ -52,6 +54,9 @@ router.get('/deletecategory/:id',admindeletecategory)
 router.get('/editcategory/:id',admineditcategory)
 router.post('/updatecatogery/:id',adminupdatecategory)
 router.get('/allorders',adminallorders)
+router.get('/orderstatus',getorderstatus)
+router.post('/order-status',getorderstatus)
+router.get('/orderdetail/:id',getorderdetails)
 
 
 

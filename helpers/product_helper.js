@@ -3,6 +3,9 @@ const collections = require('../config/collection')
 const bcrypt = require('bcrypt');
 const { ObjectId } = require('mongodb');
 const { response } = require('../app');
+const { Razorpay } = require('razorpay');
+// const { default: orders } = require('razorpay/dist/types/orders');
+
 
 // import Swal from 'sweetalert2'
 // const Swal = require('sweetalert')
@@ -67,6 +70,15 @@ module.exports = {
 
 
   },
+  getorderProducts: (proId) => {
+    return new Promise((resolve, reject) => {
+      db.get().collection(collections.PRODUCT_COLLECTION).findOne(({ _id: ObjectId(proId) })).then((products) => {
+        console.log(products);
+        resolve(products)
+      })
+
+    })
+  },
 
   
 getAllProducts: () => {
@@ -79,13 +91,52 @@ getAllProducts: () => {
 },
 
 
-getFilterProduct : ((category) => {
+getFilterProduct : (category) => {
   return new Promise(async(resolve , reject) => {
     let product =await db.get().collection(collections.PRODUCT_COLLECTION).find({categoryname : category}).toArray()
     resolve(product)
   })
-})
-  
+},
+getOrderProduct: (oneProId) => {
+  return new Promise(async (resolve, reject) => {
+      let orderProduct = await db.get().collection(collections.ORDER_COLLECTION).aggregate([
+          {
+              $match: { _id: ObjectId(oneProId) }
+          },
+          {
+              $unwind: '$products'
+          },
+          {
+              $project: {
+                item: '$products.item',
+                quantity: '$products.quantity'
+
+              }
+          },
+          {
+              $lookup: {
+                  from: collections.PRODUCT_COLLECTION,
+                  localField: 'item',
+                        foreignField: '_id',
+                  as: 'product'
+              }
+          },
+          {
+              $project: {
+                item: 1,
+                quantity: 1,
+
+                  product: { $arrayElemAt: ['$product', 0] }
+              }
+          }
+
+      ]).toArray()
+     
+      resolve(orderProduct)
+  })
+},
+
+
 
 
 

@@ -3,39 +3,77 @@
  <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
                     <div class="col-sm-12 col-xl-10">
-                        <div class="bg-secondary rounded h-100 p-4">
+                        <div class="bg-white rounded h-100 p-4">
                             <h6 class="mb-4">User List</h6>
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                      <th scope="col">Date</th>
-                                        <th scope="col">paymentmethod</th>
-                                           <th scope="col">Address</th>
-                                         <th scope="col">Pincode</th>
-                                        <th scope="col">Total Amount</th>
-                                        <th scope="col">status</th>
-                                       
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {{#each allorders}}
-                                    <tr>
-                                       
-                                        <td>{{this.deliverydetails.date}}</td>
-                                        <td>{{this.paymentmethod}}</td>
-                                        <td>{{this.deliverydetails.address}}</td>
-                                        <td>{{this.deliverydetails.pincode}}</td>
-                                        <td>{{this.totalAmount}}</td>
-                                         <td>{{this.status}}</td>
-                                      
+                             <table class="table table-bordered text-dark" id="orderTable">
+                <thead>
 
-                                        
+                  <tr>
+                    <th scope="col">sl.no</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Method</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">View</th>
+                  </tr>
 
-                                    </tr>
-                                   {{/each}}
-                                </tbody>
-                            </table>
+                </thead>
+
+                <tbody>
+                  
+
+                  {{#each allorders}}
+                    
+                  
+                  <tr>
+                    <th scope="row">{{@index}}</th>
+                    <td>{{this.deliverydetails.firstname}}</td>
+                    <td>{{this.date}}</td>
+                    <td>{{this.status}}</td>
+                    <td>₹{{this.totalAmount}}</td>
+                    <td>{{this.paymentmethod}}</td>
+                    <td>
+
+
+                      <select onchange="deliveryStatusUpdate(value,'{{this._id}}' , {{this.userid}})"
+                        name="form-control item" >
+
+
+                        <option hidden value="{{this.status}}" selected>
+                          {{this.status}}
+                        </option>
+
+
+                        {{#isEqual this.status 'placed'}}
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                        {{/isEqual}} 
+
+                        {{#isEqual this.status 'Shipped'}}
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                        {{/isEqual}}
+
+                        {{#isEqual this.status 'Delivered'}}
+                       <h5>Delivered</h5>
+                        {{/isEqual}}
+
+                      </select>
+
+
+                    </td>
+                    <td>
+                      <a href="/admin/orderdetail/{{this._id}} " class="text-danger">Order Detail</a>
+                    </td>
+                  </tr>
+                 
+                  {{/each}}
+                </tbody>
+
+              </table>
                         </div>
                     </div>
                    
@@ -44,4 +82,36 @@
 
        </div>
            
-            <!-- Table End -->
+           
+
+  <script>
+
+
+
+    function deliveryStatusUpdate(value, orderId) {
+
+      $.ajax({
+        url: '/admin/order-status',
+        data: {
+          order: orderId,
+          valueChange: value
+        },
+        method: 'POST',
+        success: function (response) {
+         Swal.fire(
+  'Good job!',
+  'Order status Changed!',
+  'success'
+).then(function () {
+            location.reload();
+          });
+        }
+      });
+
+
+    }
+
+</script>
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

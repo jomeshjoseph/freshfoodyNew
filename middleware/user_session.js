@@ -1,13 +1,13 @@
-const { getUserDetails } = require('../helpers/user-helpers')
+const getUserDetail  = require('../helpers/user-helpers')
 
 module.exports = {
     sessionCheck: (req, res, next) => {
 
-        if (req.session.users) {
-            getUserDetails(req.session.users._id).then((user) => {
+        if (req.session.user) {
+            getUserDetail.getuserdetails(req.session.user._id).then((user) => {
                 if (user.isBlocked) {
                     req.session.loggedIn = false
-                    req.session.users = null
+                    req.session.user = null
                     res.redirect('/login');
 
                 } else {
@@ -17,8 +17,8 @@ module.exports = {
             })
 
         } else {
-
-            res.redirect('/login');
+console.log('pleseeeeeeeeeeeeeee');
+res.render("user/user_login");
             
         }
     },

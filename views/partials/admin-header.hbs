@@ -1,4 +1,4 @@
-    <div class="container-fluid position-relative d-flex p-0">
+ <div class="container-fluid position-relative d-flex p-0">
         <!-- Spinner Start -->
         <div id="spinner" class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
@@ -6,12 +6,9 @@
             </div>
         </div>
         <!-- Spinner End -->
-        <!-- Content Start -->
-       
-              <!-- Sidebar Start -->
 
-
-   <div class="sidebar pe-4 pb-3">
+          <!-- Sidebar Start -->
+        <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-secondary navbar-dark">
                 <a href="index.html" class="navbar-brand mx-4 mb-3">
                    <h1 class="fw-bold text-danger m-0">F<span class="text-success">oo</span>dy</h1>
@@ -22,46 +19,30 @@
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
                     <div class="ms-3">
-                        <h6 class="mb-0">Jhon Doe</h6>
+                        {{#if admin}}
+                        <h6 class="mb-0">{{admin.firstname}}</h6>
+                        {{else}}
                         <span>Admin</span>
+                        {{/if}}
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                    <a href="#" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-                    <a href="/admin/allusers" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Users</a>
-                    <a href="/admin/allproducts" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Products</a>
-                    <a href="/admin/allcategory" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Category</a>
-                    <a href="/admin/allorders" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Orders</a>
-                    {{!-- <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Elements</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="button.html" class="dropdown-item">Buttons</a>
-                            <a href="typography.html" class="dropdown-item">Typography</a>
-                            <a href="element.html" class="dropdown-item">Other Elements</a>
-                        </div>
-                    </div>
-                    
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="signin.html" class="dropdown-item">Sign In</a>
-                            <a href="signup.html" class="dropdown-item">Sign Up</a>
-                            <a href="404.html" class="dropdown-item">404 Error</a>
-                            <a href="blank.html" class="dropdown-item">Blank Page</a>
-                        </div>
-                    </div> --}}
+                    <a href="/admin/home" id="dashboard-link"  class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                    <a href="/admin/allusers" id="users-link" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Users</a>
+                    <a href="/admin/allproducts" id="products-link" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Products</a>
+                    <a href="/admin/allcategory" id="category-link" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Category</a>
+                    <a href="/admin/allorders" id="order-link" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Orders</a>
                 </div>
+
+   
             </nav>
         </div>
-    
-    
-     
         <!-- Sidebar End -->
-       
+
+ <!-- Content Start -->
+        <div class="content " style="min-height: 12vh" >
             <!-- Navbar Start -->
-      <div class="content">
-            <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-0 py-0">
-                  
+            <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
                 <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
                 </a>
@@ -138,92 +119,44 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            {{#if admin}}
-                           
-                           
+                          {{#if admin}}    
                             <span class="d-none d-lg-inline-flex"> {{admin.firstname}}</span>
                              {{else}}
                               <span class="d-none d-lg-inline-flex"> Admin</span>
                               {{/if}}
                         </a>
-                       <div class="dropdown-menu m-0">
-                               {{#if admin}}
+                        <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                              {{#if admin}}
                            <a href="/admin/logout" class="dropdown-item">Logout</a>
                             {{else}}
                             <a href="/login" class="dropdown-item">Login</a>
                             {{/if}}
+                        </div>
                     </div>
                 </div>
-               
             </nav>
-       
             <!-- Navbar End -->
 
 
-            <!-- Sale & Revenue Start -->
-
-            <div class="container-fluid pt-2.5 px-0.5">
-                <div class="row g-4">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class=" nav-item col-sm-6 col-xl-3 p-1"  role="presentation">
-                            <div class=" nav-link active btn btn-dark bg-secondary rounded d-flex align-items-center justify-content-between p-4" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab" aria-controls="users" aria-selected="true">
-                                <i class="fa fa-chart-line fa-3x text-primary"></i>
-                                <div class="ms-3">
-                                    <a href="/admin/allusers">
-                                     <p class="mb-2">Users</p>
-                                    <h6 class="mb-0">1234</h6>
-                                    </a>
-                                   
-                                </div>
-                            </div>
-                        </li>
-
-                    <li class="nav-item col-sm-6 col-xl-3 p-1" role="presentation" >
-                        <div type="submit" class=" nav-link btn btn-dark bg-secondary rounded d-flex align-items-center justify-content-between p-4" id="products-tab" data-bs-toggle="tab" data-bs-target="#products"  role="tab" aria-controls="products" aria-selected="false">
-                            <i class="fa fa-chart-bar fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <a href="/admin/allproducts">
-                                <p class="mb-2">Products</p>
-                                <h6 class="mb-0">1234</h6>
-                                </a>
-                                
-                            </div>
-                        </div>
-                    </li>
-                    <li class=" nav-item col-sm-6 col-xl-3 p-1" role="presentation">
-                        <div type="submit" class=" nav-link btn btn-dark bg-secondary rounded d-flex align-items-center justify-content-between p-4" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders"  role="tab" aria-controls="orders" aria-selected="false">
-                            <i class="fa fa-chart-area fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                 <a href="/admin/allorders"></a>
-                                <p class="mb-2">Orders</p>
-                                <h6 class="mb-0">1234</h6>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="nav-item col-sm-6 col-xl-3 p-1" role="presentation" >
-                        <div type="submit" class=" nav-link btn btn-dark bg-secondary rounded d-flex align-items-center justify-content-between p-4" id="revenue-tab" data-bs-toggle="tab"   role="tab" aria-controls="revenue" aria-selected="false">
-                            <a href="table.html"></a> 
-                            <i class="fa fa-chart-pie fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Total Revenue</p>
-                                <h6 class="mb-0">$1234</h6>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-                </div>
-</div>
+        </div>
     </div>
-           
+        </div>
+        <!-- table end -->
+            </div>
             <!-- Sale & Revenue End -->
-              <!-- Footer Start -->
+
+
         
+
+
+
+
            
-            <!-- Footer End -->
-              {{!-- <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a> --}}
-        {{!-- </div> --}}
+      
         <!-- Content End -->
 
+
         <!-- Back to Top -->
-      
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
+

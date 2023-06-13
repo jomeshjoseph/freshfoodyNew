@@ -1,0 +1,45 @@
+            <!-- Table Start -->
+       <div class="content">
+ <div class="container-fluid pt-2 px-2">
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-4">
+                        <div class="bg-secondary rounded h-100 p-4">
+                            <h6 class="mb-4">Order status</h6>
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                      <th scope="col">Client Name</th>
+                                       <th scope="col">Date</th>
+                                        <th scope="col">paymentmethod</th>
+                                        <th scope="col">Total Amount</th>
+                                        <th scope="col">status</th>
+                                       
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each allorder}}
+                                    <tr>
+                                       <td>{{this.deliverydetails.firstname}}</td>
+                                        <td>{{this.deliverydetails.date}}</td>
+                                        <td>{{this.paymentmethod}}</td>
+                            
+                                        <td>{{this.totalAmount}}</td>
+                                         <td>{{this.status}}</td>
+                                      
+
+                                        
+
+                                    </tr>
+                                   {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+
+       </div>
+           
+            <!-- Table End -->

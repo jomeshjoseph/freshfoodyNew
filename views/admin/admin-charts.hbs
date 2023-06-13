@@ -1,0 +1,188 @@
+<div class="content">
+    <div class="container-fluid  px-4 col-sm-12">
+        
+            <div class="container-fluid px-4">
+                <div class="row g-4">
+                    <ul class=" nav nav-tabs "   id="myTab" role="tablist">
+                       
+
+                    <li class=" nav-item col-sm-6 col-xl-4 p-1" role="presentation">
+                        <div type="submit"
+                            class=" nav-link shadow p-3 m-3 bg-white rounded btn btn-light bg-white border border-success rounded d-flex align-items-center justify-content-between p-4"
+                            id="products-tab" data-bs-toggle="tab" data-bs-target="#products" role="tab" aria-controls="products"
+                            aria-selected="false">
+                            <div class="ms-2">
+                                <a href="">
+                                    <a class="mb-2 text-dark " style="font-size:20px">Total Orders</a>
+                                    <h5 class="mb-0 text-dark"></h5>
+                                    <i class="bi bi-cart rounded fa-3x text-danger"></i>
+                                </a>
+                            </div>
+                            <div class="ms-4">
+                                <a href="/admin/allproducts">
+                                    <h4 class="mb-0 text-dark">{{totalOrders}}</h4>
+                                    <a class="mb-0 text-danger" style="font-size:15px">Orders</a>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class=" nav-item col-sm-6 col-xl-4 p-1" role="presentation">
+                        <div type="submit"
+                            class=" nav-link shadow p-3 m-3 bg-white rounded btn btn-light bg-white border border-success rounded d-flex align-items-center justify-content-between p-4"
+                            id="products-tab" data-bs-toggle="tab" data-bs-target="#products" role="tab" aria-controls="products"
+                            aria-selected="false">
+                            <div class="ms-2">
+                                <a href="">
+                                    <a class="mb-2 text-dark " style="font-size:20px">Total Customers</a>
+                                    <h5 class="mb-0 text-dark"></h5>
+                                    <i class="bi bi-people rounded fa-3x text-success"></i>
+                                </a>
+                            </div>
+                            <div class="ms-4">
+                                <a href="/admin/allproducts">
+                                    <h4 class="mb-0 text-dark">{{totalUsers}}</h4>
+                                    <a class="mb-0 text-success" style="font-size:15px">Customers</a>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                     <li class=" nav-item col-sm-6 col-xl-4 p-1" role="presentation">
+                        <div type="submit"
+                            class=" nav-link shadow p-3 m-3 bg-white rounded btn btn-light bg-white border border-success rounded d-flex align-items-center justify-content-between p-4"
+                            id="products-tab" data-bs-toggle="tab" data-bs-target="#products" role="tab" aria-controls="products"
+                            aria-selected="false">
+                            <div class="ms-2">
+                                <a href="">
+                                    <a class="mb-2 text-dark " style="font-size:20px">Total Products</a>
+                                    <h5 class="mb-0 text-dark"></h5>
+                                    <i class="fas fa-carrot rounded fa-4x text-info"></i>
+                                </a>
+                            </div>
+                            <div class="ms-4">
+                                <a href="/admin/allproducts">
+                                    <h4 class="mb-0 text-dark">{{totalproduct}}</h4>
+                                    <a class="mb-0 text-info" style="font-size:15px">Products</a>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+              
+                    <li class=" nav-item col-sm-6 col-xl-4 p-1" role="presentation">
+                        <div type="submit"
+                            class=" nav-link shadow p-3 m-3 bg-white rounded btn btn-light bg-white border border-success rounded d-flex align-items-center justify-content-between p-4"
+                            id="products-tab" data-bs-toggle="tab" data-bs-target="#products" role="tab" aria-controls="products"
+                            aria-selected="false">
+                            <div class="ms-2">
+                                <a href="">
+                                    <a class="mb-2 text-dark " style="font-size:20px">Daily Sale</a>
+                                    <h5 class="mb-0 text-dark mb-3"></h5>
+                                    <i class="fas fa-rupee-sign rounded fa-3x text-success"></i>
+                                    <i class="bi bi-currency-rupee"></i>
+                                </a>
+                            </div>
+                            <div class="ms-4">
+                                <a href="/admin/allproducts">
+                                    <h4 class="mb-0 text-dark">{{dailySales}}</h4>
+                                    <a class="mb-0 text-success" style="font-size:15px">Rupees</a>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                   
+                    <li class=" nav-item col-sm-6 col-xl-4 p-1" role="presentation">
+                        <div type="submit"
+                            class=" nav-link shadow p-3 m-3 bg-white rounded btn btn-light bg-white border border-success rounded d-flex align-items-center justify-content-between p-4"
+                            id="products-tab" data-bs-toggle="tab" data-bs-target="#products" role="tab" aria-controls="products"
+                            aria-selected="false">
+                            <div class="ms-2">
+                                <a href="">
+                                    <a class="mb-2 text-dark " style="font-size:20px">Weekly Sales</a>
+                                   <h5 class="mb-0 text-dark mb-3"></h5>
+                                    <i class="fas fa-rupee-sign rounded fa-3x text-success"></i>
+                                </a>
+                            </div>
+                            <div class="ms-4">
+                                <a href="/admin/allproducts">
+                                    <h4 class="mb-0 text-dark">{{weeklySales}}</h4>
+                                    <a class="mb-0 text-success" style="font-size:15px">Rupees</a>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                      <li class=" nav-item col-sm-6 col-xl-4 p-1" role="presentation">
+                        <div type="submit"
+                            class=" nav-link shadow p-3 m-3 bg-white rounded btn btn-light bg-white border border-success rounded d-flex align-items-center justify-content-between p-4"
+                            id="products-tab" data-bs-toggle="tab" data-bs-target="#products" role="tab" aria-controls="products"
+                            aria-selected="false">
+                            <div class="ms-2">
+                                <a href="">
+                                    <a class="mb-2 text-dark " style="font-size:20px">Yearly Sales</a>
+                                    <h5 class="mb-0 text-dark mb-3"></h5>
+                                    <i class="fas fa-rupee-sign rounded fa-3x text-success"></i>
+                                </a>
+                            </div>
+                            <div class="ms-4">
+                                <a href="/admin/allproducts">
+                                    <h4 class="mb-0 text-dark">{{yearlySales}}</h4>
+                                    <a class="mb-0 text-success" style="font-size:15px">Rupees</a>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+
+                 
+                   
+                </ul>
+                </div>
+
+               
+            </div>
+        <div class="row g-4">
+            <div class="col-sm-12 col-xl-12">
+                <div class="bg-success rounded h-100 p-4">
+                    <!-- Chart Start -->
+                    <div class="container-fluid pt-4 px-4">
+                        <div class="col-sm-12 col-xl-12">
+                            <div class="bg-white rounded h-100 p-4">
+                                <h6 class="mb-4">Payment Method</h6>
+                                <canvas id="myChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
+<script>
+var xValues = ["Cash On Delivery", "Online"];
+var yValues = [35, 65];
+var barColors = [
+  "#b91d47",
+  "#00aba9",
+  "#2b5797",
+  "#e8c3b9",
+  "#1e7145"
+];
+
+new Chart("myChart", {
+  type: "pie",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "payment Method used"
+      
+    }
+  }
+});
+</script>

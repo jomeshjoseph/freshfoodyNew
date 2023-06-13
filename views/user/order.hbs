@@ -1,24 +1,22 @@
-<!-- Page Header Start -->
-<div class="container-fluid page-header mb-3 wow fadeIn" data-wow-delay="0.1s">
-  <div class="container">
-    <h1 class="display-3 mb-3 animated slideInDown">About Us</h1>
-    <nav aria-label="breadcrumb animated slideInDown">
-      <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
-        <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
-        <li class="breadcrumb-item text-dark active" aria-current="page">About Us</li>
-      </ol>
-    </nav>
-  </div>
-</div>
-<!-- Page Header End -->
+
+ <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row g-0 gx-5 align-items-end">
+                <div class="col-lg-6">
+                    <div class="section-header text-start mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                        <h1 class="display-5 mb-3">Check Out</h1>
+                        <p>Tempor ut dolore lorem kasd vero ipsum sit eirmod sit. Ipsum diam justo sed rebum vero dolor duo.</p>
+                    </div>
+                </div>
+
 
 <!-- checkout start -->
+ <form id="checkoutForm">
 <div class="container  mt-4">
   <h4 class="mb-5">Billing Address</h4>
 <div class="row g-3 mb-3" >
 <div class="col-sm-5 mx-5 ">
-  <form id="checkout-form">
+  
     <div class="row  g-3 mb-3 ">
       <div class="col-md-6">
         <div class="form-floating">
@@ -77,14 +75,13 @@
 </div>
 <div class="w-25 col-sm-5 pl-2 bg-light border border-primary" >
   
-   <h5 class="mt-5 mb-5 " >Total Amount: <span  class="text-primary">{{grandtotal}}</span>   </h5>
-   <hr>
-   <h6 class="font-bold mb-3 text-primary">Payment method</h6>
+   
+   <h5 class="font-bold mt-3 mb-3 text-primary">Payment method</h5>
 
 
    
 <div class="form-check">
-  <input class="form-check-input" type="radio" name="paymentmethod" value="COD">
+  <input class=" form-check-input" type="radio" name="paymentmethod" value="COD" checked>
   <label class="form-check-label" >
     Cash On Delivery
   </label>
@@ -96,38 +93,90 @@
   </label>
 
 </div>
+<hr>
+ 
         <div class="col-12 text-center">
-            <button class=" mt-5 btn btn-primary rounded-pill px-5" type="submit">Check Out</button>
+       
+          <div class="row">
+  <div class="  mt-3 col-auto">
+    
+    <h5 class="font-bold  text-primary">Total Amount:</h5>
+  </div>
+  <div class=" col">
+    <h1 class="text-danger">₹  {{grandtotal}}</h1>
+  </div>
+</div>
+
+           <button type="submit">place order</button>
         </div>
+
+</div>
 </div>
 </div>
 
-   </form>
-
+</form>
+</div>
+</div>
 </div>
 <script>
-  $("#checkout-form").submit((e)=>{
-    e.preventDefault()
-    console.log('entered')
-    $.ajax({
-      url:'/place-order',
-      method:'post',
-      data:$("#checkout-form").serialize(),
-      success:(response)=>{
-        console.log('huiiiii')
-      
+  $(document).ready(function(){
 
-   
-        Swal.fire({
-          title: 'Order Placed Successfully!',
-          text: 'Thank you!',
-          icon: 'success'
-        }).then(() => {
-          if (response.status) {
-            location.href = 'profile';
-          }
-        });
-      }
+    $("#checkoutForm").submit(function(e){
+      e.preventDefault()
+      $.ajax({
+        url:"/place-order",
+        type: "post",
+        data:  $("#checkoutForm").serialize()
+      }).done(res => {
+        console.log('success')
+      }).fail(err =>{
+        console.log("error")
+      })
     })
   })
+
+
+  // Your JavaScript code here
+
+function razorpaypayment(order){
+  var options = {
+    "key": "rzp_test_8Hsl6IOam7xUhL", // Enter the Key ID generated from the Dashboard
+    "amount": order.amount  , // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Foody", //your business name
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+        alert(response.razorpay_payment_id);
+        alert(response.razorpay_order_id);
+        alert(response.razorpay_signature)
+
+        verifypayment(response,order)
+    },
+    "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+        "name": "Gaurav Kumar", //your customer's name
+        "email": "gaurav.kumar@example.com", 
+        "contact": "9000090000"  //Provide the customer's phone number for better conversion rates 
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.open();
+}
+function verifypayment(payment,order){
+  @.ajax({
+    url:'/verify-payment',
+    data:{
+      payment,
+      order
+    },
+    method:'post'
+  })
+}  
 </script>

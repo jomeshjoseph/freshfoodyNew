@@ -1,0 +1,199 @@
+
+ <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row g-0 gx-5 align-items-end">
+                <div class="col-lg-6">
+                    <div class="section-header text-start mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                        <h1 class="display-5 mb-3">Check Out</h1>
+                        <p>Tempor ut dolore lorem kasd vero ipsum sit eirmod sit. Ipsum diam justo sed rebum vero dolor duo.</p>
+                    </div>
+                </div>
+
+
+<!-- checkout start -->
+ <form id="checkoutForm">
+<div class="container  mt-4">
+  <h4 class="mb-5">Billing Address</h4>
+<div class="row g-3 mb-3" >
+<div class="col-sm-5 mx-5 ">
+  
+    <div class="row  g-3 mb-3 ">
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input type="text" placeholder="First Name" class="form-control" name="firstname" value="{{user.firstname}}" />
+           <input type="text"  name="userId" value="{{user._id}}" hidden />
+          <label class="form-label">First Name</label>
+        </div>
+       </div>
+      <div class="col-md-6">
+        <div class="form-floating">
+        <input type="text"  placeholder="Last Name" name="lastname" class="form-control" value="{{user.lastname}}" />
+        <label class="form-label" >Last Name</label>
+      </div>
+    </div>
+      <!-- Email input -->
+      <div class="col-md-12">
+        <div class="form-floating">
+        <input type="email"  placeholder="Email" class="form-control" name="email" value="{{user.email}}" />
+        <label class="form-label" >Email</label>
+      </div>
+    </div>
+    <!-- --phone-- -->
+    <div class="col-md-6">
+      <div class="form-floating">
+      <input type="number"  placeholder="Phone Number" class="form-control" name="phone" value="{{user.phone}}" />
+      <label class="form-label" >Phone Number</label>
+    </div>
+  </div>
+      <!-- Password input -->
+      <div class="col-md-6">
+        <div class="form-floating">
+        <input type="text" placeholder="pincode" class="form-control" name="pincode"/>
+        <label class="form-label" >PinCode</label>
+      </div>
+    </div>
+    
+      <!-- Password input -->
+      <div class="col-md-12">
+        <div class="form-floating">
+        <input type="text"  placeholder="Address" class="form-control" name="address" value="{{user.address}}" />
+        <label class="form-label" >Address</label>
+      </div>
+    </div>
+    </div>
+  
+  
+        <!-- Checkbox -->
+        
+  
+        <!-- Submit button -->
+        <div class="col-12  mb-5 text-center">
+           
+        </div>
+ 
+
+</div>
+<div class="w-25 col-sm-5 pl-2 bg-light border border-primary" >
+  
+   
+   <h5 class="font-bold mt-3 mb-3 text-primary">Payment method</h5>
+
+
+   
+<div class="form-check">
+  <input class=" form-check-input" type="radio" name="paymentmethod" value="COD" checked>
+  <label class="form-check-label" >
+    Cash On Delivery
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="paymentmethod" value="ONLINE" >
+  <label class="form-check-label">
+    Online Payment
+  </label>
+
+</div>
+<hr>
+ 
+        <div class="col-12 text-center">
+       
+          <div class="row">
+  <div class="  mt-3 col-auto">
+    
+    <h5 class="font-bold  text-primary">Total Amount:</h5>
+  </div>
+  <div class=" col">
+    <h1 class="text-danger">₹  {{grandtotal}}</h1>
+  </div>
+</div>
+
+           <button type="submit">place order</button>
+        </div>
+
+</div>
+</div>
+</div>
+
+</form>
+</div>
+</div>
+</div>
+<script>
+  $("#checkoutForm").submit((e) => {
+        e.preventDefault()
+        $.ajax({
+            url: '/place-order',
+            type: 'post',
+            data: $('#checkoutForm').serialize(),
+            success: (response) => {
+
+ if(response.CODsuccess){
+
+    swal.fire(
+                    'Good job!',
+                    'Your order is placed successfully!',
+                    'success'
+                ).then(() => {
+                        location.href='/orderlist'
+
+                })
+                    }else{
+razorpaypayment(response)
+ swal.fire( 'Good job!',
+                    'Your order is placed successfully!',
+                    'success'
+                    ).then(()=>{
+                        location.href='/orderlist'
+                    })
+                       
+
+
+                    }
+
+
+
+
+            }
+        })
+    })
+  
+
+function razorpaypayment(order){
+  var options = {
+    "key": "rzp_test_8Hsl6IOam7xUhL", // Enter the Key ID generated from the Dashboard
+    "amount": order.amount  , // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Foody", //your business name
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+       
+        verifypayment(response,order)
+    },
+    "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+        "name": "Gaurav Kumar", //your customer's name
+        "email": "gaurav.kumar@example.com", 
+        "contact": "9000090000"  //Provide the customer's phone number for better conversion rates 
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.open();
+}
+function verifypayment(payment,order){
+ $.ajax({
+    url:'/verify-payment',
+    data:{
+      payment,
+      order
+    },
+    method:'post'
+  })
+}  
+</script>

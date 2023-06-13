@@ -1,0 +1,137 @@
+
+ <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row g-0 gx-5 align-items-end">
+                <div class="col-lg-6">
+                    <div class="section-header text-start mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                        <h1 class="display-5 mb-3">Shopping Cart</h1>
+                        <p>Tempor ut dolore lorem kasd vero ipsum sit eirmod sit. Ipsum diam justo sed rebum vero dolor duo.</p>
+                    </div>
+                </div>
+
+<!-- Table Start -->
+<div class="content">
+  <div class="row g-3">
+  <div class="container-fluid   col-sm-12">
+    <a href="/profile"> <button class="w-25 btn btn-outline-success border-2 rounded-pill">Add Product</button></a>
+  
+    
+      <div class="col-sm-8 col-xl-8">
+        
+        <div class="bg-white rounded h-100 p-2">
+          <h6 class="display-6 mt-3 mb-3 text-center">Cart List</h6>
+      
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                {{!-- <th scope="col">No.</th> --}}
+                <th scope="col">Item</th>
+                <th scope="col">Image</th>
+                <th scope="col">Price/kg</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Total Price</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              {{#each products}}
+           
+                <tr>
+                  
+                  {{!-- <th scope="row">{{@index}}</th> --}}
+             
+
+                  <td>{{this.product.productname}}</td>
+
+                  <td><img
+                      style="width:50px;height:50px  "
+                      src="/pro-images/{{this.product.image}}"
+                      alt=""
+                    />
+                  </td>
+                  <td>Rs.{{this.product.price}}</td>
+
+                  <td>
+                    <button class="cart-item-count mr-3" onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user}}',-0.250,'{{this.product.productname}}')" >-</button>
+                    <span id="{{this.product._id}}">{{this.quantity}}</span>
+                    <button class="cart-item-count ml-3"onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user}}',0.250,'{{this.product.productname}}')"
+                    >+</button>
+       
+           <td><span id={{this.product.productname}}>Rs.{{total}}</span></td>
+            
+ 
+  <td>
+                    <a href="/removeitem/{{this.product._id}}" class="btn btn-outline-danger border-2 rounded-pill">remove</a>
+
+                  </td>
+                </tr>
+               
+ {{/each}}
+ 
+            </tbody>
+          </table>
+          <hr />
+
+        </dv>
+      </div>
+<div class="w-25 col-sm-5 pl-2 bg-light border border-primary">
+  <div class="row g-3">
+        <div>
+            <div class="container">
+  <div class="row pr-5">
+    <div class="col-12 d-flex justify-content-end ">
+      <h1 class="text-success"><span id="grandtotal">Rs. {{grandtotal}}</span></h1>
+       {{!-- <h3 style="text-align: right" class=" d-block justify-content-center text-bold  mt-5 pr-5 ">{{grandtotal}}</h3> --}}
+    </div>
+
+  </div>
+</div>
+
+          </div>
+          {{!-- <h3 style="text-align: right" class=" d-block justify-content-center text-bold  mt-5 pr-5 ">{{grandtotal}}</h3> --}}
+          <div class=" d-flex justify-content-end">
+            <a href="/orderpage" class=" w-25 btn btn-outline-success border-2 rounded-pill">Proceed to Buy</a>
+              
+                {{!-- <a href="/oderpage"> <button class="w-25 btn btn-outline-success border-2 rounded-pill">Proceed to Buy</button></a> --}}
+               
+          </div>
+  </div>
+  
+</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+  function changeQuantity(cartId, proId,userId, count,pretotal) {
+     
+     let quantity = parseFloat(document.getElementById(proId).innerHTML) 
+  
+     count = parseFloat(count)
+  $.ajax({ 
+    url: '/change-product-quantity',
+     data: { 
+      user:userId,
+        cart: cartId, 
+     product:proId, 
+     count: count, 
+     quantity: quantity ,
+ pretotal:pretotal
+     }, 
+     method: 'post', 
+     success: (response) => {
+         if (response.removeproduct)
+          { alert("product removed from cart")
+  console.log("not problemmmmmm") 
+  location.reload() 
+    } else {
+  document.getElementById(proId).innerHTML = quantity + count
+document.getElementById('grandtotal').innerHTML= response.grandtotal
+document.getElementById('{{this.product.productname}}').innerHTML= response.pretotal
+
+
+
+  } } }) }
+</script>

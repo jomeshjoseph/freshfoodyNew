@@ -53,6 +53,7 @@ module.exports = {
             description: prodetails.description,
             price: prodetails.price,
             image: prodetails.image,
+            stock:prodetails.stock
 
           }
         }).then((response) => {
@@ -191,7 +192,22 @@ addOfferPrice : async (data , product) => {
   });
   resolve(response);
 },
-
+editStock : ((prodId , details) => {
+        
+  return new Promise((resolve , reject) => {
+      db.get().collection(collections.PRODUCT_COLLECTION).updateOne({_id : ObjectId(prodId)} , {$set : {stock : details.stock}}).then((response) => {
+          resolve()
+      })           
+  })
+}),
+updateStock : (prodId , quantity) => {
+  console.log(prodId,'>>>>>>>>>>><<<<<<<<<<');
+  console.log(quantity,'quantityyyyyyyyyyy');
+  return new Promise((resolve , reject) => {
+      db.get().collection(collections.PRODUCT_COLLECTION).updateOne({_id : ObjectId(prodId)} , {$inc : {stock : -quantity}})
+      resolve()
+  })
+},
 
 
 

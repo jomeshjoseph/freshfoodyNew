@@ -429,7 +429,7 @@ module.exports = {
 
   getWeeklySalesGraph: () => {
     return new Promise(async (resolve, reject) => {
-      let dailysales = await db
+      let weeklysales = await db
         .get()
         .collection(collections.ORDER_COLLECTION)
         .aggregate([
@@ -456,7 +456,7 @@ module.exports = {
           },
         ])
         .toArray();
-      resolve(dailysales);
+      resolve(weeklysales);
     });
   },
 

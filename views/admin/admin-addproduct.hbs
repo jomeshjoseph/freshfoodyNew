@@ -10,7 +10,7 @@
                                     placeholder="Product Name" name="productname">
                                 <label for="floatingInput">Product Name</label>
                             </div>
-                            <div class="nav-item dropdown">
+                            <div class="form-floating mb-3 nav-item dropdown">
                        <select class="form-select" name="categoryname" aria-label="Default select example">
                         <option selected>Select category</option>
                         {{#each getcategory}}
@@ -21,7 +21,7 @@
                       
                     </select>
                         </div>
-                    </div>
+                    
                             <div class="form-floating mb-3">
                                 <input type="text " class="form-control" id="floatingInput"
                                     placeholder="Description" name="description">
@@ -32,6 +32,11 @@
                                     placeholder="Price" name="price">
                                 <label for="floatingInput">Price</label>
                             </div>
+                               <div class="form-floating mb-3">
+                                <input type="text " class="form-control" id="floatingInput"
+                                    placeholder="Stock" name="Stock">
+                                <label for="floatingInput">Stock</label>
+                            </div>
                             <div class="mb-3">
                                 <label for="formFile" class="form-label">Default file input example</label>
                                 <input class="form-control bg-dark" name="image" multiple type="file" id="formFile">
@@ -40,6 +45,7 @@
                              <button type="submit" class="btn btn-danger m-2">Add Product</button>
                              </div>
                              
+                             </div>
                              </div>
                        </form>
                     </div>

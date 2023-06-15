@@ -29,7 +29,8 @@ const {adminlogin,adminreg,admininfo,adminhomepage,adminallusers,adminBlockUser,
     adminUnBlockUser,adminallproducts,adminaddproductpage,adminaddproduct,logout,admineditproduct,
     adminupdateproduct,admindeleteproduct,adminaddcategorypage,adminaddcatogory,adminallcategory,
     admindeletecategory,admineditcategory,adminupdatecategory,adminallorders,adminhome,getorderstatus,
-    getorderproduct,getorderdetails,getallreport,viewOffer,addCoupenPost,productCoupen,productOfferPost} = require('../controller/admin_controller');
+    getorderproduct,getorderdetails,getallreport,viewOffer,addCoupenPost,productCoupen,productOfferPost,
+    inventoryManagement,editStockPost} = require('../controller/admin_controller');
 
 
 router.get('/',adminlogin)
@@ -63,4 +64,6 @@ router.post('/addcoupon' ,addCoupenPost)
 
 router.get('/productOffer',productCoupen)
 router.post('/addProductOffer/:id' , productOfferPost)
+router.get('/inventory' , inventoryManagement)
+router.post('/edit-stock/:id' , editStockPost)
 module.exports = router;

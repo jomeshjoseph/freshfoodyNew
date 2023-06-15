@@ -167,7 +167,23 @@
                     </div>
                 </div>
             </div>
+              
+        <div class="row g-4">
+    <div class="col-sm-12 col-xl-12">
+                <div class="bg-success rounded h-100 p-4">
+                    <!-- Chart Start -->
+                    <div class="container-fluid pt-4 px-4">
+                        <div class="col-sm-12 col-xl-12">
+                            <div class="bg-white rounded h-100 p-2">
+                                <h6 class="mb-4">sals</h6>
+                                
+                                <canvas id="salesChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
            
+        </div>
         </div>
         {{!-- <div class="col-12">
               <div class="card recent-sales overflow-auto">
@@ -208,6 +224,8 @@
 </div>
 <script src="lib/chart/chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+
+
 </script>
 
 <script>
@@ -273,4 +291,26 @@
         }
     });
 </script>
-   
+<script>
+
+ var ctxD = document.getElementById("salesChart").getContext("2d");
+    var myChart2 = new Chart(ctxD, {
+        type: "line",
+        data: {
+            labels: weeks,
+      datasets: [{
+        data: [{{ orderData.PLACED }}, {{ orderData.DELIVERED }}, {{ orderData.PENDING }} , {{ orderData.SHIPPED }}],
+        backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360"],
+        hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774"]
+      }]
+            },
+        options: {
+    responsive: true, // Make the chart responsive
+    scales: {
+      y: {
+        beginAtZero: true, // Optional: Start the y-axis at zero
+      },
+    },
+  },
+    });
+</script>

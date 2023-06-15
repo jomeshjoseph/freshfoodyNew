@@ -309,9 +309,22 @@ console.log(proId);
              res.redirect('/admin/productOffer')
          })
      },
-      
+     inventoryManagement : (req , res) => {
+        product_helper.getallproducts().then((product) => {       
 
-    
+            res.render('admin/admin-inventoryManagement' , { layout: 'admin-layout', admin:true , product})
+        })
+    },
+
+    editStockPost : (async(req , res) => {
+        let prodId = req.params.id
+        let product = await product_helper.getproductdetails(prodId)
+        let stock = parseInt(req.body.stock)
+        req.body.stock = stock
+        product_helper.editStock(prodId , req.body).then(() => {
+            res.redirect('/admin/inventory')
+        })       
+    }),
     
   
             

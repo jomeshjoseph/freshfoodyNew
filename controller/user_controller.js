@@ -361,7 +361,11 @@ console.log(coupens,'coupensssss');
         let cartcount = await userHepler.getcartcount(req.session.user._id);
         let totalprice =req.session.amount
 
-        userHepler.placeorder(req.body, products, totalprice).then((orderId) => {
+        userHepler.placeorder(req.body, products, totalprice).then(async(orderId) => {
+          for  (let i = 0; i < products.length; i++) {
+            await product_helper.updateStock(products[i].item, products[i].quantity)
+        }
+
             console.log(orderId, "order id");
 
             if (req.body["paymentmethod"] === "COD") {

@@ -44,7 +44,12 @@
           <p>{{product.description}}</p>
         
           <div class="single-product-form mt-3 mb-3">
-            <a class="btn btn-primary rounded-pill py-3 px-5" href="/add-to-cart/{{product._id}}">Add to Cart</a> {{!--
+            {{#if this.stock}}
+            <a class="btn btn-primary rounded-pill py-3 px-5" href="/add-to-cart/{{product._id}}">Add to Cart</a>
+            {{else}}
+            <h4 style="color: #ff6f00;" class="hover-text">out of stock</h4>
+            {{/if}}
+            {{!--
             <a class="text-body" id="addtocart" href="/add-to-cart/{{this._id}}"><i
                 class="fa fa-shopping-bag text-primary me-2"></i>Add to cart</a> --}} <a class=" underline px-5"
               href="/profile"><u>Back</u></a>

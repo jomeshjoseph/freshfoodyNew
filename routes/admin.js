@@ -30,7 +30,7 @@ const {adminlogin,adminreg,admininfo,adminhomepage,adminallusers,adminBlockUser,
     adminupdateproduct,admindeleteproduct,adminaddcategorypage,adminaddcatogory,adminallcategory,
     admindeletecategory,admineditcategory,adminupdatecategory,adminallorders,adminhome,getorderstatus,
     getorderproduct,getorderdetails,getallreport,viewOffer,addCoupenPost,productCoupen,productOfferPost,
-    inventoryManagement,editStockPost} = require('../controller/admin_controller');
+    inventoryManagement,editStockPost,getsalesgraph } = require('../controller/admin_controller');
 
 
 router.get('/',adminlogin)
@@ -66,4 +66,5 @@ router.get('/productOffer',productCoupen)
 router.post('/addProductOffer/:id' , productOfferPost)
 router.get('/inventory' , inventoryManagement)
 router.post('/edit-stock/:id' , editStockPost)
+router.get('/filtersalesgraph/:filtertype',getsalesgraph)
 module.exports = router;

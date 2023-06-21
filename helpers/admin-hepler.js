@@ -459,6 +459,52 @@ module.exports = {
       resolve(weeklysales);
     });
   },
+  getDateSalesGraph: (selectedDate) => {
+    return new Promise(async (resolve, reject) => {
+      let startDate = new Date(selectedDate);
+      let endDate = new Date(selectedDate);
+      endDate.setDate(endDate.getDate() + 1);
+  
+      let dailysales = await db
+        .get()
+        .collection(collections.ORDER_COLLECTION)
+        .aggregate([
+          {
+            $match: {
+              date: {
+                $gte: startDate,
+                $lt: endDate,
+              },
+            },
+          },
+          {
+            $project: {
+              date: { $toDate: "$date" },
+              totalAmount: 1,
+            },
+          },
+          {
+            $group: {
+              _id: { $dateToString: { format: "%d-%m-%Y", date: "$date" } },
+              total: { $sum: "$totalAmount" },
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $sort: {
+              _id: 1,
+            },
+          },
+          {
+            $limit: 7,
+          },
+        ])
+        .toArray();
+  
+      resolve(dailysales);
+    });
+  },
+  
 
   getAllData: () => {
     return new Promise(async (resolve, reject) => {

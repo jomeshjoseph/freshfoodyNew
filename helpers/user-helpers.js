@@ -3,7 +3,7 @@ const collections = require("../config/collection");
 const bcrypt = require("bcrypt");
 const { ObjectId } = require("mongodb");
 const { response } = require("../app");
-const moment = require('moment');
+const moment = require("moment");
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -28,77 +28,73 @@ module.exports = {
           .get()
           .collection(collections.USER_COLLECTION)
           .findOne({ email: data.email });
-  
+
         let userWithPhone = await db
           .get()
           .collection(collections.USER_COLLECTION)
           .findOne({ phone: data.phone });
-  
+
         if (userWithEmail) {
-         
           reject({ error: "Email Already Exists", status: false });
         } else if (userWithPhone) {
-         
           reject({ error: "Phone number already exists", status: false });
         } else {
-        //   response.status=true
-        //   client.verify
-        //   .services(serviceid)
-        //   .verifications.create({ to: `+91${data.phone}`, channel: "sms" })
-        //   .then((data) => {});
-        // resolve(response);     
-        data.repassword = await bcrypt.hash(data.repassword, 10);
+          //   response.status=true
+          //   client.verify
+          //   .services(serviceid)
+          //   .verifications.create({ to: `+91${data.phone}`, channel: "sms" })
+          //   .then((data) => {});
+          // resolve(response);
+          data.repassword = await bcrypt.hash(data.repassword, 10);
           db.get().collection(collections.USER_COLLECTION).insertOne(data);
-          resolve({user:data,status:true});
-          console.log(data, "LLLLpppp");    
+          resolve({ user: data, status: true });
+          console.log(data, "LLLLpppp");
         }
       } catch (error) {
         reject({ error: "An error occurred", status: false });
       }
     });
   },
-  
 
   userLogin: (data) => {
     return new Promise(async (resolve, reject) => {
       let loginstatus = false;
       let response = {};
-      try{
-      let user = await db
-        .get()
-        .collection(collections.USER_COLLECTION)
-        .findOne({ email: data.email });
+      try {
+        let user = await db
+          .get()
+          .collection(collections.USER_COLLECTION)
+          .findOne({ email: data.email });
 
-      console.log(user);
-      if (user) {
-        if (user.isBlocked) {
-          reject({error:"user is blocked"});
+        console.log(user);
+        if (user) {
+          if (user.isBlocked) {
+            reject({ error: "user is blocked" });
+          } else {
+            bcrypt.compare(data.repassword, user.repassword).then((status) => {
+              console.log(data.repassword);
+              console.log(user.repassword);
+              console.log(status, "statusssssssss");
+              if (status) {
+                console.log("login sucess");
+                response.user = user;
+                response.status = true;
+                console.log(response);
+                resolve({ user, status: true });
+              } else {
+                console.log("login failed");
+                response.status = false;
+                reject({ error: "Invalid Password", status: false });
+              }
+            });
+          }
         } else {
-          bcrypt.compare(data.repassword, user.repassword).then((status) => {
-            console.log(data.repassword);
-            console.log(user.repassword);
-            console.log(status, "statusssssssss");
-            if (status) {
-              console.log("login sucess");
-              response.user = user;
-              response.status = true;
-              console.log(response);
-              resolve({user, status:true});
-            } else {
-              console.log("login failed");
-              response.status = false;
-              reject({error:"Invalid Password",status:false});
-            }
-          });
+          console.log("login failed");
+          reject({ error: "User Not Found", status: false });
         }
-      } else {
-        console.log("login failed");
-        reject({ error:"User Not Found",status: false });
+      } catch (error) {
+        reject({ error: "An error occurred", status: false });
       }
-    }catch(error)
-    {
-      reject({error:"An error occurred",status:false})
-    }
     });
   },
 
@@ -201,12 +197,14 @@ module.exports = {
   // },
 
   getproductDetails: (proId) => {
-    return new Promise(async (resolve , reject) => {
-      let product = await db.get().collection(collections.PRODUCT_COLLECTION).findOne({_id : ObjectId(proId)})
-      resolve(product)
-    })
+    return new Promise(async (resolve, reject) => {
+      let product = await db
+        .get()
+        .collection(collections.PRODUCT_COLLECTION)
+        .findOne({ _id: ObjectId(proId) });
+      resolve(product);
+    });
   },
-
 
   // return new Promise((resolve, reject) => {
   //   db.get()
@@ -226,7 +224,7 @@ module.exports = {
     //   console.log(userdetails)
 
     // })
-    console.log(">>>>>>>>>>>>>>>",userId);
+    console.log(">>>>>>>>>>>>>>>", userId);
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collections.USER_COLLECTION)
@@ -483,24 +481,22 @@ module.exports = {
       resolve(grandtotal[0]?.grandtotal);
     });
   },
-  
-  
+
   placeorder: (order, products, totalprice) => {
     return new Promise(async (resolve, reject) => {
       console.log(order, products, totalprice, "3333333333333333");
       let status = order.paymentmethod === "COD" ? "placed" : "pending";
       let orderobj = {
         deliverydetails: {
-          firstname:order.firstname,
+          firstname: order.firstname,
           mobile: order.phone,
           address: order.address,
           pincode: order.pincode,
-         
         },
         userId: ObjectId(order.userId),
         paymentmethod: order.paymentmethod,
         products: products,
-        date: moment().format('MMM Do YYYY, HH:MM ' ),
+        date: moment().format("MMM Do YYYY, HH:MM "),
         totalAmount: totalprice,
         status: status,
       };
@@ -584,12 +580,12 @@ module.exports = {
     // })
   },
   generateraorzpay: (orderId, total) => {
-    let orderIdS=orderId.toString()
+    let orderIdS = orderId.toString();
     console.log(typeof orderId, orderId);
     console.log(total);
     return new Promise(async (resolve, reject) => {
       let options = {
-        amount: total*100, // amount in the smallest currency unit
+        amount: total * 100, // amount in the smallest currency unit
         currency: "INR",
         receipt: orderIdS,
       };
@@ -597,7 +593,7 @@ module.exports = {
       instance.orders.create(options, function (err, order) {
         if (err) {
           console.log(err);
-          reject(err)
+          reject(err);
         } else {
           console.log(order, "nulllllllll");
           resolve(order);
@@ -609,254 +605,269 @@ module.exports = {
     });
   },
   verifypayment: (details) => {
-
     return new Promise((resolve, reject) => {
+      const crypto = require("crypto");
+      let hmac = crypto.createHmac("sha256", "MgZnJczEHCQ5baBRTY7h4ga6");
+      hmac.update(
+        details["payment[razorpay_order_id]"] +
+          "|" +
+          details["payment[razorpay_payment_id]"]
+      );
+      const calculatedSignature = hmac.digest("hex");
 
-      const crypto = require('crypto')
-      let hmac = crypto.createHmac('sha256', 'MgZnJczEHCQ5baBRTY7h4ga6')
-      hmac.update(details['payment[razorpay_order_id]'] + '|' + details['payment[razorpay_payment_id]'])
-      const calculatedSignature = hmac.digest('hex')
-     
-  
-      if (calculatedSignature === details['payment[razorpay_signature]']) {
-        console.log("Signature is valid")
-        let name='mghgh'
-        resolve(name)
+      if (calculatedSignature === details["payment[razorpay_signature]"]) {
+        console.log("Signature is valid");
+        let name = "mghgh";
+        resolve(name);
       } else {
-        console.log("Signature is invalid")
-        reject()
+        console.log("Signature is invalid");
+        reject();
       }
-    })
+    });
   },
 
   changepaymentstatus: (orderId) => {
     return new Promise((resolve, reject) => {
-        db.get().collection(collections.ORDER_COLLECTION).updateOne(
-            { _id: ObjectId(orderId) },
-            {
-                $set: {
-                    status: 'placed'
-                }
-            }
-        ).then(() => {
-            resolve();
-        }).catch((err) => {
-            // Handle the error here
-            // No action required for order not continued
-            const errorMessage = 'Error updating payment status';
-            reject(errorMessage);
+      db.get()
+        .collection(collections.ORDER_COLLECTION)
+        .updateOne(
+          { _id: ObjectId(orderId) },
+          {
+            $set: {
+              status: "placed",
+            },
+          }
+        )
+        .then(() => {
+          resolve();
+        })
+        .catch((err) => {
+          // Handle the error here
+          // No action required for order not continued
+          const errorMessage = "Error updating payment status";
+          reject(errorMessage);
         });
     });
-},
-getTotalAmount:(userId)=>{
-  return new Promise(async(resolve,reject)=>{
+  },
+  getTotalAmount: (userId) => {
+    return new Promise(async (resolve, reject) => {
+      let total = await db
+        .get()
+        .collection(collections.CART_COLLECTION)
+        .aggregate([
+          {
+            $match: { user: ObjectId(userId) },
+          },
+          {
+            $unwind: "$products",
+          },
+          {
+            $project: {
+              item: "$products.item",
+              quantity: "$products.quantity",
+              user: 1,
+            },
+          },
+          {
+            $lookup: {
+              from: collections.PRODUCT_COLLECTION,
+              localField: "item",
+              foreignField: "_id",
+              as: "product",
+            },
+          },
+          {
+            $project: {
+              item: 1,
+              quantity: 1,
+              user: 1,
+              product: {
+                $arrayElemAt: ["$product", 0],
+              },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              total: {
+                $sum: { $multiply: ["$quantity", parseInt("$product.price")] },
+              },
+            },
+          },
+        ])
+        .toArray();
 
-      let total=await db.get().collection(collections.CART_COLLECTION).aggregate([
-          {
-              $match:{user: ObjectId(userId)}
-          },
-          { 
-              $unwind: '$products'
-          },
-          {
-              $project: {
-                  item: '$products.item',
-                  quantity: '$products.quantity',
-                  user: 1
-              }
-          },
-          {
-              $lookup: {
-                  from: collections.PRODUCT_COLLECTION,
-                  localField: 'item',
-                  foreignField: '_id',
-                  as: 'product'
-              }
-          },
-          {
-              $project: {
-                  item: 1,
-                  quantity: 1,
-                  user: 1,
-                  product: {
-                      $arrayElemAt: ['$product', 0]
-                  }
-              }
-          },
-          {
-              $group:{
-                  _id:null,
-                  total:{$sum:{$multiply:['$quantity',parseInt('$product.price')]}}
-              }
-          }
-         
-          
-      ]).toArray()
-      
-      
       resolve(total[0]?.total);
+    });
+  },
+  applyCoupen: (details, userId, date, totalAmount) => {
+    return new Promise(async (resolve, reject) => {
+      let response = {};
+      let coupen = await db
+        .get()
+        .collection(collections.COUPON_COLLECTION)
+        .findOne({ code: details.coupon, status: true });
 
-  })
+      if (coupen) {
+        const expDate = new Date(coupen.endingDate);
+        response.coupenData = coupen;
+        let user = await db
+          .get()
+          .collection(collections.COUPON_COLLECTION)
+          .findOne({ code: details.coupon, users: ObjectId(userId) });
 
-},
-applyCoupen : (details , userId , date , totalAmount) => {
-  return new Promise(async(resolve , reject) => {
-      let response = {}
-      let coupen = await db.get().collection(collections.COUPON_COLLECTION).findOne({ code : details.coupon , status : true })
-      
-      if(coupen) {
-          const expDate = new Date(coupen.endingDate)
-          response.coupenData = coupen
-          let user = await db.get().collection(collections.COUPON_COLLECTION).findOne({ code : details.coupon , users : ObjectId(userId) })
+        if (user) {
+          response.used = "coupen is already used";
+          resolve(response);
+        } else {
+          if (date <= expDate) {
+            response.dateValid = true;
+            resolve(response);
 
-          if(user){
-              response.used = "coupen is already used"
-              resolve(response)
-          }
-          else{
-              if(date <= expDate){
-                  response.dateValid = true
-                  resolve(response)
+            let total = totalAmount;
 
-                  let total = totalAmount
+            if (total >= coupen.minAmount) {
+              response.veriftminAmount = true;
+              resolve(response);
 
-                  if(total >= coupen.minAmount){
-                      response.veriftminAmount = true
-                      resolve(response)
-
-                      if(total <= coupen.maxAmount){
-                          response.verifymaxAmount = true
-                          resolve(response)
-                      }
-                      else{
-                          response.veriftminAmount = true
-                          response.verifymaxAmount = true
-                          resolve(response)
-                      }
-                  }
-                  else{
-                      response.minAmountMsg = 'your min purchase should be : ' + coupen.minAmount
-                      response.minAmount = false
-                      resolve(response)
-                  }
+              if (total <= coupen.maxAmount) {
+                response.verifymaxAmount = true;
+                resolve(response);
+              } else {
+                response.veriftminAmount = true;
+                response.verifymaxAmount = true;
+                resolve(response);
               }
-              else{
-                  response.invalidDateMsg = 'Coupen Expired'
-                  response.invalidDate = true
-                  response.Coupenused = false
+            } else {
+              response.minAmountMsg =
+                "your min purchase should be : " + coupen.minAmount;
+              response.minAmount = false;
+              resolve(response);
+            }
+          } else {
+            response.invalidDateMsg = "Coupen Expired";
+            response.invalidDate = true;
+            response.Coupenused = false;
 
-                  resolve(response)
-              }
+            resolve(response);
           }
+        }
+      } else {
+        response.invalidCoupen = true;
+        response.invalidCoupenMsg = "Invalid Coupen";
+        resolve(response);
       }
-      else{
-          response.invalidCoupen = true
-          response.invalidCoupenMsg = 'Invalid Coupen'
-          resolve(response)
+      if (
+        response.dateValid &&
+        response.veriftminAmount &&
+        response.verifymaxAmount
+      ) {
+        response.verify = true;
 
+        db.get()
+          .collection(collections.CART_COLLECTION)
+          .updateOne(
+            { user: ObjectId(userId) },
+            {
+              $set: {
+                coupen: ObjectId(coupen._id),
+              },
+            }
+          );
+        resolve(response);
+      } else {
+        response.verify = false;
       }
-      if(response.dateValid && response.veriftminAmount && response.verifymaxAmount){
-          response.verify = true
+    });
+  },
+  getcurrentcoupen: () => {
+    return new Promise(async (resolve, reject) => {
+      let coupons = await db
+        .get()
+        .collection(collections.COUPON_COLLECTION)
+        .find()
+        .toArray();
 
-          db.get().collection(collections.CART_COLLECTION).updateOne({ user : ObjectId(userId) } , 
-          {
-              $set : {
-                  coupen : ObjectId(coupen._id)
-              }
-          }
-          )
-          resolve(response)
-      }else{
-        response.verify=false
-      }
-  })
-},
-getcurrentcoupen: () => {
-  return new Promise(async (resolve, reject) => {
-    let coupons = await db
-      .get()
-      .collection(collections.COUPON_COLLECTION)
-      .find()
-      .toArray();
-
-    resolve(coupons);
-  });
-},
-singleorderdetails: (orderId) => {
-  return new Promise(async (resolve, reject) => {
-  
+      resolve(coupons);
+    });
+  },
+  singleorderdetails: (orderId) => {
+    return new Promise(async (resolve, reject) => {
       let orderDetail = await db
         .get()
         .collection(collections.ORDER_COLLECTION)
         .findOne({ _id: ObjectId(orderId) });
       resolve(orderDetail);
-    
-  });
-},
-returnOrder: (ordId) => {
-  return new Promise((resolve, reject) => {
-      let ordReturn = db.get().collection(collections.ORDER_COLLECTION).updateOne({ _id: ObjectId(ordId) },
+    });
+  },
+  returnOrder: (ordId) => {
+    return new Promise((resolve, reject) => {
+      let ordReturn = db
+        .get()
+        .collection(collections.ORDER_COLLECTION)
+        .updateOne(
+          { _id: ObjectId(ordId) },
           {
-              $set: {
-                  status: "product returned"
-              }
+            $set: {
+              status: "product returned",
+            },
           }
-      )
-      resolve(ordReturn)
-  })
-},
-getProductDetails: (ordId) => {
-        
-  return new Promise(async (resolve, reject) => {
-      let productDetails = await db.get().collection(collections.ORDER_COLLECTION).aggregate([
+        );
+      resolve(ordReturn);
+    });
+  },
+  getProductDetails: (ordId) => {
+    return new Promise(async (resolve, reject) => {
+      let productDetails = await db
+        .get()
+        .collection(collections.ORDER_COLLECTION)
+        .aggregate([
           {
-              $match: { _id: ObjectId(ordId) }
+            $match: { _id: ObjectId(ordId) },
           },
           {
-              $unwind: '$products'
+            $unwind: "$products",
           },
           {
-              $project: {
-                  item: '$products.item',
-                  quantity: '$products.quantity'
-              }
+            $project: {
+              item: "$products.item",
+              quantity: "$products.quantity",
+            },
           },
           {
-              $lookup: {
-                  from: collections.PRODUCT_COLLECTION,
-                  localField: 'item',
-                  foreignField: '_id',
-                  as: 'product'
-              }
+            $lookup: {
+              from: collections.PRODUCT_COLLECTION,
+              localField: "item",
+              foreignField: "_id",
+              as: "product",
+            },
           },
           {
-              $project: {
-                  item: 1,
-                  quantity: 1,
-                  product: { $arrayElemAt: ['$product', 0] }
-              }
+            $project: {
+              item: 1,
+              quantity: 1,
+              product: { $arrayElemAt: ["$product", 0] },
+            },
+          },
+        ])
+        .toArray();
+      resolve(productDetails);
+    });
+  },
+  orderCancel: (ordId) => {
+    return new Promise(async (resolve, reject) => {
+      let ordCancel = await db
+        .get()
+        .collection(collections.ORDER_COLLECTION)
+        .updateOne(
+          { _id: ObjectId(ordId) },
+          {
+            $set: {
+              status: "order cancelled",
+            },
           }
-
-      ]).toArray()
-      resolve(productDetails)
-  })
-},
-orderCancel: (ordId) => {
-  return new Promise(async(resolve, reject) => {
-      let ordCancel =await db.get().collection(collections.ORDER_COLLECTION).updateOne({ _id: ObjectId(ordId) },
-          {
-              $set: {
-                  status: "order cancelled"
-              }
-          }
-      )
-      resolve(ordCancel)
-  })
-
-},
-
-
-
-
-
+        );
+      resolve(ordCancel);
+    });
+  },
 };

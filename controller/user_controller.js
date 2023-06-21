@@ -5,18 +5,17 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const serviceid = process.env.TWILIO_AUTH_Sid;
 const client = require("twilio")(accountSid, authToken);
 const Swal = require("sweetalert");
-const moment = require('moment');
-var slug = require('slug')
-
+const moment = require("moment");
+var slug = require("slug");
 
 const Razorpay = require("razorpay");
 require("dotenv").config();
 
-const { response, render } = require("../app");
 const collection = require("../config/collection");
 const product_helper = require("../helpers/product_helper");
 const categoryHelper = require("../helpers/category-helper");
 const orderHelper = require("../helpers/order-helper");
+const walletHelper = require("../helpers/wallet-helper");
 
 const usermiddle = require("../middleware/user_session");
 const userHelpers = require("../helpers/user-helpers");
@@ -29,7 +28,7 @@ module.exports = {
       req.session.loginerr = false;
     }
   },
-  registerPage:(req, res) => {
+  registerPage: (req, res) => {
     if (req.session.loggedIn) {
       res.redirect("/profile");
     } else {
@@ -37,7 +36,6 @@ module.exports = {
       req.session.loginerr = false;
     }
   },
-
 
   homePage: (req, res) => {
     userHepler.getallproducts().then((allproducts) => {
@@ -83,30 +81,31 @@ module.exports = {
       .then((response) => {
         req.session.loggedIn = true;
         req.session.user = response.user;
-        console.log(response,'check userrrrrrr');
-        res.json({ success: true, redirect: '/profile' });
+        console.log(response, "check userrrrrrr");
+        res.json({ success: true, redirect: "/profile" });
       })
       .catch((error) => {
         req.session.loginerr = true;
-        res.status(400).json({ success: false, error:error.error });
+        res.status(400).json({ success: false, error: error.error });
       });
   },
-  
+
   signupsub: async (req, res) => {
     console.log(req.body, "bodyyyyyyyyyyyy");
-
+    // const userId = req.session.user.id
+    let data = req.body;
+    // await walletHelper.CREATE_WALLET(data)
     await userHepler
       .userReg(req.body)
       .then((response) => {
         req.session.loggedIn = true;
         req.session.user = response.user;
-        
-        res.json({success:true, redirect:'/profile'})
-      
+
+        res.json({ success: true, redirect: "/profile" });
       })
       .catch((error) => {
         req.session.loginerr = true;
-        res.status(400).json({success:false, error:error.error})
+        res.status(400).json({ success: false, error: error.error });
       });
 
     //       await userHepler.userLogin(req.body).then((response)=>{
@@ -156,7 +155,7 @@ module.exports = {
           product,
           pages,
           cartcount,
-          catFilter
+          catFilter,
         });
       });
     } else {
@@ -202,7 +201,7 @@ module.exports = {
   mobilesent: (req, res) => {
     // res.render('user/OTP_verify')
     userHepler.doOtp(req.body).then((response) => {
-      console.log(response,'mobile otppppppppp');
+      console.log(response, "mobile otppppppppp");
       if (response.status) {
         signupData = response.user;
         res.render("user/OTP_verify");
@@ -229,15 +228,14 @@ module.exports = {
   // },
 
   singleproduct: async (req, res) => {
-    
     let usere = req.session.users;
     let productId = req.params.id; // Corrected line
     let product = await userHepler.getproductDetails(productId);
-    console.log(product , "bbbbbbbbbbbbbbbbbbbbbbbbb");
+    console.log(product, "bbbbbbbbbbbbbbbbbbbbbbbbb");
     // res.send("dddddddddd")
-    res.render('user/productsingle', { product,usere });
+    res.render("user/productsingle", { product, usere });
   },
-     
+
   // userdetails:(req,res)=>{
   //     let user=await db.get().collection(collections.USER_COLLECTION).findOne({ email:data.email })
   //     let user=req.session.user
@@ -246,38 +244,36 @@ module.exports = {
 
   userdetails: async (req, res) => {
     if (req.session.loggedIn) {
-      let userId=req.params.id
+      let userId = req.params.id;
       console.log(userId);
-let cartcount=await userHepler.getcartcount(userId)
+      let cartcount = await userHepler.getcartcount(userId);
       let user = await userHepler.getuserdetails(userId);
       console.log(user, "yyyyyyyyy");
-      res.render("user/userdetails", { user,cartcount });
+      res.render("user/userdetails", { user, cartcount });
     }
   },
-  edituserdetailspage:async (req, res) => {
+  edituserdetailspage: async (req, res) => {
     if (req.session.loggedIn) {
-      let cartcount=await userHepler.getcartcount(req.params.id)
+      let cartcount = await userHepler.getcartcount(req.params.id);
 
-      let user = await userHepler.getuserdetails(req.params.id);;
+      let user = await userHepler.getuserdetails(req.params.id);
       console.log(user, "edituserrrrrrr");
 
-      res.render("user/edit-userdetails", { user,cartcount });
+      res.render("user/edit-userdetails", { user, cartcount });
     }
   },
-  updateuserdetails:async (req, res) => {
+  updateuserdetails: async (req, res) => {
     let proId = req.params.id;
-   
-    let cartcount=await userHepler.getcartcount(req.params.id)
 
-    
+    let cartcount = await userHepler.getcartcount(req.params.id);
+
     let prodetails = req.body;
     console.log(proId);
-   
 
     userHepler.userupdate(proId, prodetails).then(async () => {
       let user = await userHepler.getuserdetails(proId);
       // res.render('admin/admin-homepage', { layout: 'admin-layout', admin: true })
-      res.render("user/userdetails", { user,cartcount });
+      res.render("user/userdetails", { user, cartcount });
     });
   },
   editpassword: async (req, res) => {
@@ -293,10 +289,14 @@ let cartcount=await userHepler.getcartcount(userId)
     let products = await userHepler.getcartproducts(req.session.user._id);
     let cartcount = await userHepler.getcartcount(req.session.user._id);
     let grandtotal = await userHepler.getgrandtotal(req.session.user._id);
-    let coupens = await userHepler.getcurrentcoupen()
-    req.session.amount=grandtotal
-console.log(coupens,'coupensssss');
+    let coupens = await userHepler.getcurrentcoupen();
+    req.session.amount = grandtotal;
+    console.log(coupens, "coupensssss");
     // console.log(req.session);
+    const currentDate = new Date();
+
+
+    
 
     if (grandtotal) {
       res.render("user/cart", {
@@ -304,7 +304,7 @@ console.log(coupens,'coupensssss');
         user: req.session.user._id,
         cartcount,
         grandtotal,
-        coupens
+        coupens,
       });
     } else {
       res.redirect("/profile");
@@ -331,17 +331,16 @@ console.log(coupens,'coupensssss');
       console.log(response, "removeeeeeeee");
       // res.json(response);
       res.redirect("/cart");
-      
     });
   },
   getorderpage: async (req, res) => {
     // let grandtotal = await userHepler.getgrandtotal(req.session.user._id);
-    let grandtotal = req.session.amount
+    let grandtotal = req.session.amount;
     let cartcount = await userHepler.getcartcount(req.session.user._id);
     if (req.session.loggedIn) {
       let user = req.session.user;
 
-      res.render("user/order1", { user, grandtotal,cartcount });
+      res.render("user/order1", { user, grandtotal, cartcount });
     }
   },
 
@@ -353,39 +352,55 @@ console.log(coupens,'coupensssss');
       res.json(response);
     });
   },
- 
 
   placeorder: async (req, res) => {
     try {
-        let products = await userHepler.getcartproductlist(req.body.userId);
-        let cartcount = await userHepler.getcartcount(req.session.user._id);
-        let totalprice =req.session.amount
+      let products = await userHepler.getcartproductlist(req.body.userId);
+      let cartcount = await userHepler.getcartcount(req.session.user._id);
+      let totalprice = req.session.amount;
+      userId = req.session.user._id;
+      console.log(userId, "check userIddddddddddddddd");
+      const previousOrders = await orderHelper.getUserOrders(userId);
+      // const isFirstOrder = previousOrders === 0;
 
-        userHepler.placeorder(req.body, products, totalprice).then(async(orderId) => {
-          for  (let i = 0; i < products.length; i++) {
-            await product_helper.updateStock(products[i].item, products[i].quantity)
-        }
+      if (previousOrders === 0) {
+        console.log("first order.rrrrrrrr");
+        await walletHelper.CREATE_WALLET(userId);
+      }
 
-            console.log(orderId, "order id");
+      userHepler
+        .placeorder(req.body, products, totalprice)
+        .then(async (orderId) => {
+          for (let i = 0; i < products.length; i++) {
+            await product_helper.updateStock(
+              products[i].item,
+              products[i].quantity
+            );
+          }
 
-            if (req.body["paymentmethod"] === "COD") {
-                res.json({ CODsuccess: true,orderId });
-            } else {
-                userHepler.generateraorzpay(orderId, totalprice).then((response) => {
-                    res.json(response);
-                }).catch((error) => {
-                    console.log(error);
-                    const errorMessage = 'Error generating payment';
-                    res.status(500).json({ error: errorMessage });
-                });
-            }
+          console.log(orderId, "order id");
+
+          if (req.body["paymentmethod"] === "COD") {
+            res.json({ CODsuccess: true, orderId });
+          } else {
+            userHepler
+              .generateraorzpay(orderId, totalprice)
+              .then((response) => {
+                res.json(response);
+              })
+              .catch((error) => {
+                console.log(error);
+                const errorMessage = "Error generating payment";
+                res.status(500).json({ error: errorMessage });
+              });
+          }
         });
     } catch (error) {
-        console.log(error);
-        const errorMessage = 'Error placing order';
-        res.status(500).json({ error: errorMessage });
+      console.log(error);
+      const errorMessage = "Error placing order";
+      res.status(500).json({ error: errorMessage });
     }
-},
+  },
 
   productPagination: async (req, res) => {
     let user = req.session.user;
@@ -416,7 +431,7 @@ console.log(coupens,'coupensssss');
   productPaginationforproduct: async (req, res) => {
     let user = req.session.user;
     // console.log(user, req.query, "jdklllllllllllllllllll");
-    
+
     let catFilter = await categoryHelper.getallcategory();
     let pageCount = req.query.id || 1;
     // console.log(pageCount, "mmmmmmmmmmmmmmmmmmmmmmmmmm");
@@ -436,7 +451,7 @@ console.log(coupens,'coupensssss');
         // console.log("profufffffffffffff1", pages);
         // console.log(pages, "kkkkkkkkkkkkkkkkkkkkkkkkkkppppppppppppppppp");
       });
-      console.log(user,pages,'checkkkkkk');
+      console.log(user, pages, "checkkkkkk");
       res.render("user/productpage", { user, product, pages, catFilter });
     });
   },
@@ -465,165 +480,224 @@ console.log(coupens,'coupensssss');
     let userId = req.session.user._id;
     console.log(userId);
     let orders = await userHepler.getuserorders(userId);
-// let user=await userHepler.getuserdetails(userId)
-// let shipto=user.firstname
-// console.log(shipto,'userrrrrrrrrr');
+    // let user=await userHepler.getuserdetails(userId)
+    // let shipto=user.firstname
+    // console.log(shipto,'userrrrrrrrrr');
     let cartcount = await userHepler.getcartcount(userId);
-  // let formatdate = moment(deliverdate).format("MMMM Do YYYY")
-  // console.log(formatdate,'dateeeeeeeee');
-  // let formatdate=moment(deliverdate).format('LLL')
-
+    // let formatdate = moment(deliverdate).format("MMMM Do YYYY")
+    // console.log(formatdate,'dateeeeeeeee');
+    // let formatdate=moment(deliverdate).format('LLL')
 
     // console.log(orders,'dateeeeeeeeee' );
-    res.render("user/orderlist", { user: userId, orders,cartcount});
-
+    res.render("user/orderlist", { user: userId, orders, cartcount });
   },
 
-  paymentverify:(req,res)=>{
+  paymentverify: (req, res) => {
     console.log(req.body);
-    userHepler.verifypayment(req.body).then(()=>{
-      userHepler.changepaymentstatus(req.body['order[receipt]']).then(()=>{
-        console.log("payment syccessfuul");
-        res.json({status:true})
+    userHepler
+      .verifypayment(req.body)
+      .then(() => {
+        userHepler.changepaymentstatus(req.body["order[receipt]"]).then(() => {
+          console.log("payment syccessfuul");
+          res.json({ status: true });
+        });
       })
-    }).catch((err)=>{
-      console.log(err);
-      res.json({status:false,errMsg:'Payment Failed'})
-    })
+      .catch((err) => {
+        console.log(err);
+        res.json({ status: false, errMsg: "Payment Failed" });
+      });
   },
-//   getorderproduct:async(req, res)=> {
-//     const oneProductId = req.params.id
-//     let userId = req.session.user._id;
-//     let orders = await userHepler.getuserorders(userId);
-//     console.log(orders);
-//     console.log(oneProductId,"oooooooooo");
-//     product_helper.getOrderProduct(oneProductId).then((oneOrderProduct) => {
-//         res.render('user/orderdetail', { user: userId, oneOrderProduct ,orders})
-//     })
-// }
-getorderproduct:async(req, res)=> {
-  const oneProductId = req.params.id
-  
-  console.log(oneProductId,"oooooooooo");
+  //   getorderproduct:async(req, res)=> {
+  //     const oneProductId = req.params.id
+  //     let userId = req.session.user._id;
+  //     let orders = await userHepler.getuserorders(userId);
+  //     console.log(orders);
+  //     console.log(oneProductId,"oooooooooo");
+  //     product_helper.getOrderProduct(oneProductId).then((oneOrderProduct) => {
+  //         res.render('user/orderdetail', { user: userId, oneOrderProduct ,orders})
+  //     })
+  // }
+  getorderproduct: async (req, res) => {
+    const oneProductId = req.params.id;
 
- let allorders = await userHepler.singleorderdetails(oneProductId)
- console.log(allorders,'orderrrrrrrrrrrrrrrrr');
-  product_helper.getOrderProduct(oneProductId).then((orderProduct)=>{
-    res.render('user/orderdetail', {user: true,orderProduct,allorders});
-  }).catch((error) => {
-    // Handle any errors that occur during the process
-    console.error('Error retrieving order details:', error);
-    // Render an error page or send an error response
-    res.status(500).send('Internal Server Error');
-  })
+    console.log(oneProductId, "oooooooooo");
 
-},
-getordersummary:async(req, res)=> {
-  const oneProductId = req.params.id
-  user=req.session.user
-  console.log(oneProductId,"oooooooooo");
-
- let allorders = await userHepler.singleorderdetails(oneProductId)
- console.log(allorders,'orderrrrrrrrrrrrrrrrr');
-  product_helper.getOrderProduct(oneProductId).then((orderProduct)=>{
-    res.render('user/ordersummary', {user: true,user,orderProduct,allorders});
-  }).catch((error) => {
-    // Handle any errors that occur during the process
-    console.error('Error retrieving order details:', error);
-    // Render an error page or send an error response
-    res.status(500).send('Internal Server Error');
-  })
-
-},
-
-coupenVerify: (async (req, res) => {
-  let user = req.session.user._id
-  console.log(user,'userrrrcheckkkk');
-  const date = new Date()
-  let totalAmount = await userHepler.getgrandtotal(user)
-  console.log(totalAmount, 'totalAmounttttttttttt');
-  let total = totalAmount
-
-  if (req.body.coupen == '') {
-      res.json({
-          noCoupen: true,
-          total
+    let allorders = await userHepler.singleorderdetails(oneProductId);
+    console.log(allorders, "orderrrrrrrrrrrrrrrrr");
+    product_helper
+      .getOrderProduct(oneProductId)
+      .then((orderProduct) => {
+        res.render("user/orderdetail", { user: true, orderProduct, allorders });
       })
-  }
+      .catch((error) => {
+        // Handle any errors that occur during the process
+        console.error("Error retrieving order details:", error);
+        // Render an error page or send an error response
+        res.status(500).send("Internal Server Error");
+      });
+  },
+  getordersummary: async (req, res) => {
+    const oneProductId = req.params.id;
+    user = req.session.user;
+    console.log(oneProductId, "oooooooooo");
 
-  else {
-      let coupenResponse = await userHepler.applyCoupen(req.body, user, date, totalAmount)
-      console.log(coupenResponse, 'coupenResponseeeeeeeeeeeeeeee');
+    let allorders = await userHepler.singleorderdetails(oneProductId);
+    console.log(allorders, "orderrrrrrrrrrrrrrrrr");
+    product_helper
+      .getOrderProduct(oneProductId)
+      .then((orderProduct) => {
+        res.render("user/ordersummary", {
+          user: true,
+          user,
+          orderProduct,
+          allorders,
+        });
+      })
+      .catch((error) => {
+        // Handle any errors that occur during the process
+        console.error("Error retrieving order details:", error);
+        // Render an error page or send an error response
+        res.status(500).send("Internal Server Error");
+      });
+  },
+
+  coupenVerify: async (req, res) => {
+    let user = req.session.user._id;
+    console.log(user, "userrrrcheckkkk");
+    const date = new Date();
+    let totalAmount = await userHepler.getgrandtotal(user);
+    console.log(totalAmount, "totalAmounttttttttttt");
+    let total = totalAmount;
+
+    if (req.body.coupen == "") {
+      res.json({
+        noCoupen: true,
+        total,
+      });
+    } else {
+      let coupenResponse = await userHepler.applyCoupen(
+        req.body,
+        user,
+        date,
+        totalAmount
+      );
+      console.log(coupenResponse, "coupenResponseeeeeeeeeeeeeeee");
       if (coupenResponse.verify) {
-          coupenResponse.originalPrice = totalAmount
-          let discountAmount = (parseInt(totalAmount) * parseInt(coupenResponse.coupenData.value)) / 100
-          console.log(discountAmount, "discountAmounttttttttttt");
+        coupenResponse.originalPrice = totalAmount;
+        let discountAmount =
+          (parseInt(totalAmount) * parseInt(coupenResponse.coupenData.value)) /
+          100;
+        console.log(discountAmount, "discountAmounttttttttttt");
 
-          if (discountAmount > parseInt(coupenResponse.coupenData.maxAmount)) {
-              discountAmount = parseInt(coupenResponse.coupenData.maxAmount)
-          }
-          let amount = totalAmount - discountAmount
-          coupenResponse.discountAmount = Math.round(discountAmount)
-          coupenResponse.amount = Math.round(amount)
-          req.session.amount = Math.round(amount)
-          coupenResponse.savedAmount = totalAmount - Math.round(amount)
-          console.log(">>>>>>>>><<<<<<<<<<<<", coupenResponse, 'coupenResponse2222222222');
-          res.json(coupenResponse)
+        if (discountAmount > parseInt(coupenResponse.coupenData.maxAmount)) {
+          discountAmount = parseInt(coupenResponse.coupenData.maxAmount);
+        }
+        let amount = totalAmount - discountAmount;
+        coupenResponse.discountAmount = Math.round(discountAmount);
+        coupenResponse.amount = Math.round(amount);
+        req.session.amount = Math.round(amount);
+        coupenResponse.savedAmount = totalAmount - Math.round(amount);
+        console.log(
+          ">>>>>>>>><<<<<<<<<<<<",
+          coupenResponse,
+          "coupenResponse2222222222"
+        );
+        res.json(coupenResponse);
+      } else {
+        coupenResponse.total = totalAmount;
+        res.json(coupenResponse);
       }
-      else {
-          coupenResponse.total = totalAmount
-          res.json(coupenResponse)
-      }
-  }
-}),
-returnOrder: (async (req, res) => {
-  let ordId = req.params.id
-  let orderReturm =userHepler.returnOrder(ordId)
-  let returnReason = await orderHelper.returnReason(req.body.returnReason, ordId)
-  let oneOrder = await orderHelper.getStatusDetails(ordId)
-  let orderProducts = await userHepler.getProductDetails(ordId)
-  let status = oneOrder.status
+    }
+  },
+  returnOrder: async (req, res) => {
+    let ordId = req.params.id;
+    let orderReturm = userHepler.returnOrder(ordId);
+    let returnReason = await orderHelper.returnReason(
+      req.body.returnReason,
+      ordId
+    );
+    let oneOrder = await orderHelper.getStatusDetails(ordId);
+    let orderProducts = await userHepler.getProductDetails(ordId);
+    let status = oneOrder.status;
 
-  if (status === 'product returned') {
+    if (status === "product returned") {
       for (let i = 0; i < orderProducts.length; i++) {
-          await product_helper.cancelStockUpdate(orderProducts[i].item, orderProducts[i].quantity)
+        await product_helper.cancelStockUpdate(
+          orderProducts[i].item,
+          orderProducts[i].quantity
+        );
       }
-      let oneOrderDetails = await orderHelper.getOneOrder(ordId)
-      let totalAmount = oneOrderDetails.total
-           
-  }
-  res.json({ status: true })
-}),
-placedOrderCancel: (async (req, res) => {
-  let ordId = req.params.id
-  console.log(ordId,'ordIddddddddddddd');
-  console.log(req.body,'bodyyyyyyyyyyyyyyy reaaaaaaaaa');
-  let reason = await orderHelper.reasonUpdate(req.body.reason, ordId)
- 
-  let ordCancel = await userHepler.orderCancel(ordId)
-  console.log(ordCancel,'ordCancel');
-  let singleOrder = await orderHelper.getStatusDetails(ordId)
-  console.log("111111111111111111111",singleOrder,'singleOrder');
-  let orderProduct = await userHepler.getProductDetails(ordId)
-  let status = singleOrder.status
-  
+      let oneOrderDetails = await orderHelper.getOneOrder(ordId);
+      let totalAmount = oneOrderDetails.total;
+    }
+    res.json({ status: true });
+  },
+  placedOrderCancel: async (req, res) => {
+    let ordId = req.params.id;
+    userId = req.session.user._id;
+    console.log(ordId, "ordIddddddddddddd");
+    console.log(req.body, "bodyyyyyyyyyyyyyyy reaaaaaaaaa");
+    let reason = await orderHelper.reasonUpdate(req.body.reason, ordId);
 
-  if (status === 'order cancelled') {
+    let ordCancel = await userHepler.orderCancel(ordId);
+    console.log(ordCancel, "ordCancel");
+    let singleOrder = await orderHelper.getStatusDetails(ordId);
+    console.log("111111111111111111111", singleOrder, "singleOrder");
+    let orderProduct = await userHepler.getProductDetails(ordId);
+    let status = singleOrder.status;
+
+    if (status === "order cancelled") {
       for (let i = 0; i < orderProduct.length; i++) {
-          await product_helper.cancelStockUpdate(orderProduct[i].item, orderProduct[i].quantity)
+        await product_helper.cancelStockUpdate(
+          orderProduct[i].item,
+          orderProduct[i].quantity
+        );
       }
-      let orderDetails = await orderHelper.getOneOrder(ordId)
-      console.log(orderDetails,'orderDetailsssssssssssssss');
-      let totalAmount = orderDetails.totalAmount
-     
-      
-  }
-  res.json({ status: true })
-}),
-productCoupen (req , res) {
-  product_helper.getallproducts().then((product) => {       
-      res.render('admin/productOffer' , { layout: 'admin-layout', admin:true, product})
-       })
-    },
 
+      let orderDetails = await orderHelper.getOneOrder(ordId);
+      console.log(orderDetails, "orderDetailsssssssssssssss");
+      let totalAmount = orderDetails.totalAmount;
+      if (orderDetails.paymentmethod !== "COD") {
+        await walletHelper.UPDATE_WALLET(userId, totalAmount);
+      }
+    }
+    res.json({ status: true });
+  },
+  productCoupen(req, res) {
+    product_helper.getallproducts().then((product) => {
+      res.render("admin/productOffer", {
+        layout: "admin-layout",
+        admin: true,
+        product,
+      });
+    });
+  },
+
+  wallet: async (req, res) => {
+    try {
+      const user = req.session.user;
+      const userId = req.session.user._id;
+      const orderDetails = await walletHelper.GET_ORDER_WALLET(
+        userId,
+        "WALLET"
+      );
+      if (!orderDetails) {
+        throw new Error("No order details found");
+      }
+      const order = JSON.parse(JSON.stringify(orderDetails));
+      const data = await walletHelper.GET_WALLET(userId);
+      let walletData = await walletHelper.WALLET_BALANCE(userId);
+      res.render("user/wallet", {
+        userId,
+        user,
+        userData: user,
+        order,
+        data,
+        walletData,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send("Internal Server Error");
+    }
+  },
 };

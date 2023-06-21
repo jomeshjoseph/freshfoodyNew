@@ -9,23 +9,25 @@
       </div>
          <!-- coupen -->
          <div >
- 
-                  {{#each coupens}}
-                  
-                    <div class="d-flex justify-content-center">
-                      <div class=" d-flex bg-danger align-items-center mt-2 ">
-                        <h1 class="text-white px-3">{{this.name}} </h1><hr>
-                        <h1 class="text-light px-2">{{this.value}}%<h5 class="text-white mr-5">OFF</h5>
-                        <p class="text-white px-2">For Minimum Purchase of {{this.minAmount}}</p>
-                        </h1>
-                        <div class=" p-2 ">
-                          
-                           {{!-- <a href="" class="btn btn-success " > get it </a> --}}
-                           <a href="#" class="btn btn-success" onclick="getCouponCode('{{this.code}}')">Get It</a>
-                        </div>
-                      </div>
-                    </div>
-                  {{/each}}
+{{#each coupens}}
+  <div class="d-flex justify-content-center">
+    <div class="d-flex bg-danger align-items-center mt-2">
+      <h1 class="text-white px-3">{{this.name}}</h1><hr>
+      <h1 class="text-light px-2">{{this.value}}%<h5 class="text-white mr-5">OFF</h5>
+      <p class="text-white px-2">For Minimum Purchase of {{this.minAmount}}</p>
+      <p class="text-white px-2">{{this.endingDate}}</p>
+      <div class="p-2">
+        
+          <a href="#" class="btn btn-success" onclick="getCouponCode('{{this.code}}')">Get It</a>
+      
+      </div>
+    </div>
+  </div>
+{{/each}}
+
+
+
+
                 
 
         
@@ -292,9 +294,24 @@ function confirmDelete(event,proId) {
         })
     }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.7/dist/handlebars.min.js"></script>
+
 <script>
   function getCouponCode(couponCode) {
   document.getElementById("couponCodeInput").value = couponCode;
 }
 
 </script>
+<script>
+Handlebars.registerHelper('isExpired', function(date) {
+  var currentDate = new Date();
+  var couponEndingDate = new Date(date);
+
+  return currentDate > couponEndingDate;
+});
+
+
+
+</script>
+
+

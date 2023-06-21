@@ -32,7 +32,7 @@ module.exports = {
         let totalUsers = await adminHepler.getTotalUsers()
         let totalproduct=await adminHepler.getTotalproductcount()
 
-
+let dateSale= await adminHepler.getDateSalesGraph()
         let yearly = await adminHepler.getYearlySalesGraph()
         let daily = await adminHepler.getDailySalesGraph()
         let weekly = await adminHepler.getWeeklySalesGraph()
@@ -52,7 +52,7 @@ module.exports = {
                 console.log('5555555555');
                 req.session.loggedIn = true
                 req.session.admin = response.admin
-                res.render('admin/admin-charts', { layout: 'admin-layout', admin: true ,totalOrders,totalUsers,totalproduct,dailySales,weeklySales,yearlySales,yearly,weekly,daily,data,orderData})
+                res.render('admin/admin-charts', { layout: 'admin-layout', admin: true ,totalOrders,totalUsers,totalproduct,dailySales,weeklySales,yearlySales,yearly,weekly,daily,data,orderData,dateSale})
             } else {
                 req.session.loginerr = "Invalid Username or Password"
                 res.redirect('/admin')
@@ -326,7 +326,13 @@ console.log(proId);
         })       
     }),
     
-  
+    getsalesgraph:(async(req,res)=>{
+        try{
+
+        }catch(error){
+console.error('error in sales',error)
+        }
+    })
             
     
     

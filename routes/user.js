@@ -52,4 +52,5 @@ router.post('/coupen-verify' ,user_controller.coupenVerify)
 router.post('/returnorder/:id',usermiddle.sessionCheck ,user_controller.returnOrder)
 router.post('/placedordercancel/:id' ,user_controller.placedOrderCancel)
 router.get('/ordersummary/:id',user_controller.getordersummary)
+router.get('/wallet',user_controller.wallet)
 module.exports = router;
